@@ -1,0 +1,5 @@
+---
+
+- name: tag
+  regex: '(\#\ *\@tag:\ *.*\:\ *.*)'
+  yaml_tag: tags
