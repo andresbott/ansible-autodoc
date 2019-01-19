@@ -1,13 +1,8 @@
 #!/usr/bin/python3
+import pprint
 
+from utils.singleton import Singleton
 
-
-class Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
 
 class Log:
     levels= {
@@ -25,9 +20,9 @@ class Log:
     def set_level(self,s):
 
         if isinstance(s, str):
-            for level in self.levels:
+            for level,v in self.levels.items():
                 if level == s:
-                    self.log_level = self.levels[level]
+                    self.log_level = v
         elif isinstance(s, int):
             if s in range(4):
                 self.log_level = s
@@ -63,11 +58,9 @@ class Log:
 
         elif isinstance(msg,dict):
             print(head+" <dict>")
-            for k,v in msg.items():
-                print("  "+k+": "+str(v)  )
+            pprint.pprint(msg)
         else:
             print(head+str(msg))
-
 
 
 class SingleLog(Log,metaclass=Singleton):
