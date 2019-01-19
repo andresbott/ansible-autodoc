@@ -3,7 +3,7 @@
 import yaml
 import re
 
-from utils import log
+from ansible_autodoc.Utils import SingleLog
 from ansible_autodoc.Config import SingleConfig
 from ansible_autodoc.FileRegistry import Registry
 
@@ -13,6 +13,7 @@ class Parser:
     log = None
     config = None
     files_registry = None
+    doc_data = None
 
     @staticmethod
     def _gen_tag_doc(tag,text="",role="",file="",line=""):
@@ -62,24 +63,28 @@ class Parser:
 
     def __init__(self):
         self.config = SingleConfig()
-        self.log = log.SingleLog()
+        self.log = SingleLog()
         self.files_registry = Registry()
         self.generate_doc_data()
 
-
+    def get_data(self):
+        return self.doc_data
 
     def generate_doc_data(self):
         """
         Generate the documentation data object
-        :return:
         """
+        r = {}
         self.log.debug("Generate Doc data")
+
         tags = self._find_tags_in_yaml()
         tag_annotations = self._fin_annotation(self.config.annotations["tag"]["regex"])
-
         parsed_tags = self._parse_tag(tags,tag_annotations)
-
         self.log.trace(parsed_tags,"Parsed Tags")
+
+        r["tags"] = parsed_tags
+
+        self.doc_data = r
 
     def _parse_tag(self,yaml_tags,tag_annotations):
         """
@@ -164,9 +169,10 @@ class Parser:
                                 elif file_group_key != tags["_all_"][found_tag]["role"]:
                                     if found_tag not in tags["_duplicate_"]:
                                         tags["_duplicate_"][found_tag] = []
+                                        tags["_duplicate_"][found_tag].append(tags["_all_"][found_tag])
                                     tags["_duplicate_"][found_tag].append(tag)
 
-                                # per role
+                            # per role
                                 if file_group_key not in tags["_roles_"].keys():
                                     tags["_roles_"][file_group_key] = {}
                                 if found_tag not in tags["_roles_"][file_group_key].keys():
@@ -226,13 +232,6 @@ class Parser:
                                 r["_duplicate_"][doc_key] = []
                                 r["_duplicate_"][doc_key].append(r["_all_"][doc_key])
                             r["_duplicate_"][doc_key].append(item)
-
-                        # # if already in _all_, check if its from the same role
-                        # # if not, add to duplicate
-                        # elif role != r["_all_"][doc_key]["role"]:
-                        #     if doc_key not in r["_duplicate_"]:
-                        #         r["_duplicate_"][doc_key] = []
-                        #     r["_duplicate_"][doc_key].append(item)
 
                         # per role
                         if role not in r["_roles_"].keys():

@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
-from utils.singleton import Singleton
+import os
+from ansible_autodoc.Utils import Singleton
+
 
 class Config:
 
     output_dir = ""
     base_dir = ""
+    script_base_dir = ""
+    template_dir = ""
+    template = "doc_and_readme"
+    template_overwrite = False
     debug_level = "info"
     is_role = None
     role_name = ""
@@ -37,8 +43,10 @@ class Config:
     ]
 
     def __init__(self):
-        pass
+        self.script_base_dir = os.path.dirname(os.path.realpath(__file__))
+        self.template_dir = os.path.realpath(self.script_base_dir+"/../templates/"+self.template)
 
-class SingleConfig(Config,metaclass=Singleton):
+
+class SingleConfig(Config, metaclass=Singleton):
     pass
 

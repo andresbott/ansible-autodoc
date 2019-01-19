@@ -4,7 +4,7 @@ import sys
 import glob
 
 from ansible_autodoc.Config import SingleConfig
-from utils import log
+from ansible_autodoc.Utils import SingleLog
 
 
 class Registry:
@@ -17,7 +17,7 @@ class Registry:
 
     def __init__(self):
         self.config = SingleConfig()
-        self.log = log.SingleLog()
+        self.log = SingleLog()
 
         self._find_yaml_files()
 
@@ -64,7 +64,7 @@ class Registry:
 
     def _scan_for_yamls(self,base,is_role=True):
         """
-        Search fror the yaml files
+        Search for the yaml files
         :param base: directory in witch we are searching
         :param is_role: is this a role directory
         :return: None
