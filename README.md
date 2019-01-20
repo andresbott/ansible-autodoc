@@ -1,6 +1,9 @@
 # ansible-autodoc
 Generate documentation from annotated playbooks and roles using templates
 
+Please note this is still a work in progress, while the code might work in it's current state 
+I don't recommend yet to use it, as I will probably change things.
+
 # Features
 * allow to document playbook projects and roles
 * use templates to generate and maintain the documentation
@@ -13,7 +16,7 @@ Generate documentation from annotated playbooks and roles using templates
 2. run `install.py` Note sudo is required
 
 ## Pip
-using pip
+using pip (not yet)
 ```
 pip install ansible-autodoc
 ``` 
