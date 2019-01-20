@@ -2,8 +2,8 @@
 #============================================================================================================
 # Role2
 #============================================================================================================
-# @tag: role2 : description of role2
-# @tag: configuration : description of configuration
+# @tag role2 : description of role2
+# @tag configuration : description of configuration
 
 
 - block:

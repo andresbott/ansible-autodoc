@@ -3,8 +3,8 @@ import os
 import sys
 import glob
 
-from ansible_autodoc.Config import SingleConfig
-from ansible_autodoc.Utils import SingleLog
+from ansibleautodoc.Config import SingleConfig
+from ansibleautodoc.Utils import SingleLog
 
 
 class Registry:

@@ -4,8 +4,8 @@ import glob
 import os
 import sys
 
-from ansible_autodoc.Utils import SingleLog,FileUtils
-from ansible_autodoc.Config import SingleConfig
+from ansibleautodoc.Utils import SingleLog,FileUtils
+from ansibleautodoc.Config import SingleConfig
 from jinja2 import Environment
 
 
@@ -19,15 +19,13 @@ class Generator:
         self.config = SingleConfig()
         self.log = SingleLog()
 
-        self.log.trace("Documentation Generator")
-        self.log.info("[Generator] Using template dir: "+self.config.template_dir)
-        self.log.info("[Generator] Using output dir: "+self.config.output_dir)
+        self.log.info("Using template dir: "+self.config.get_template_base_dir())
+        self.log.info("Using output dir: "+self.config.get_output_dir())
 
         self.doc_data = doc_data
 
         self._scan_template()
         self._write_doc()
-
 
     def _scan_template(self):
         """
@@ -35,7 +33,7 @@ class Generator:
         :return: None
         """
 
-        base_dir = self.config.template_dir
+        base_dir = self.config.get_template_base_dir()
 
         for file in glob.iglob(base_dir+'/**/*.'+self.extension, recursive=True):
 
@@ -43,14 +41,18 @@ class Generator:
             self.log.trace("[GENERATOR] found template file: "+relative_file)
             self.template_files.append(relative_file)
 
+    def _create_dir(self, dir):
+        if not self.config.dry_run:
+            os.makedirs(dir, exist_ok=True)
+        else:
+            self.log.info("[GENERATOR][DRY] Creating dir: "+dir)
+
     def _write_doc(self):
         files_to_overwite = []
         doc_data = self.doc_data
 
-        os.makedirs(self.config.output_dir, exist_ok=True)
-
         for file in self.template_files:
-            doc_file=self.config.output_dir+"/"+file[:-len(self.extension)-1]
+            doc_file=self.config.get_output_dir()+"/"+file[:-len(self.extension)-1]
             if os.path.isfile(doc_file):
                 files_to_overwite.append(doc_file)
 
@@ -61,13 +63,13 @@ class Generator:
                 sys.exit()
 
         for file in self.template_files:
-            doc_file = self.config.output_dir+"/"+file[:-len(self.extension)-1]
-            source_file = self.config.template_dir+"/"+file
+            doc_file = self.config.get_output_dir()+"/"+file[:-len(self.extension)-1]
+            source_file = self.config.get_template_base_dir()+"/"+file
 
             self.log.trace("[GENERATOR] Writing doc output to: "+doc_file+" from: "+source_file)
 
             # make sure the directory exists
-            os.makedirs(os.path.dirname(os.path.realpath(doc_file)), exist_ok=True)
+            self._create_dir(os.path.dirname(os.path.realpath(doc_file)))
 
             if os.path.exists(source_file) and os.path.isfile(source_file):
                 with open(source_file, 'r') as template:
@@ -76,5 +78,8 @@ class Generator:
                     if data is not None:
                         data = Environment(lstrip_blocks=True, trim_blocks=True).from_string(data).render(doc_data)
 
-                        with open(doc_file, 'w') as outfile:
-                            outfile.write(data)
+                        if not self.config.dry_run:
+                            with open(doc_file, 'w') as outfile:
+                                outfile.write(data)
+                        else:
+                            self.log.info("[GENERATOR][DRY] Writing to: "+doc_file)

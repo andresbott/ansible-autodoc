@@ -2,9 +2,9 @@
 #============================================================================================================
 # Included task
 #============================================================================================================
-# @tag: included : description of included
-# @tag: duplicated_tag : description of duplicated_tag
-# @tag: configuration : Duplicated description
+# @tag included : description of included
+# @tag duplicated_tag : description of duplicated_tag
+# @tag configuration : Duplicated description
 
 - block:
 

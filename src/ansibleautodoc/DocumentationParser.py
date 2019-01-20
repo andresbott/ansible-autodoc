@@ -3,9 +3,9 @@
 import yaml
 import re
 
-from ansible_autodoc.Utils import SingleLog
-from ansible_autodoc.Config import SingleConfig
-from ansible_autodoc.FileRegistry import Registry
+from ansibleautodoc.Utils import SingleLog
+from ansibleautodoc.Config import SingleConfig
+from ansibleautodoc.FileRegistry import Registry
 
 
 class Parser:
@@ -75,14 +75,22 @@ class Parser:
         Generate the documentation data object
         """
         r = {}
-        self.log.debug("Generate Doc data")
 
+        # tags
+        self.log.info("Searching for tags in use in the project...")
         tags = self._find_tags_in_yaml()
-        tag_annotations = self._fin_annotation(self.config.annotations["tag"]["regex"])
+        self.log.info("Parsing tag annotations...")
+        tag_annotations = self._fin_annotation(self.config.annotations["tag"]["regex"],self.config.annotations["tag"]["separator"])
         parsed_tags = self._parse_tag(tags,tag_annotations)
         self.log.trace(parsed_tags,"Parsed Tags")
-
         r["tags"] = parsed_tags
+
+        for simple_annotation in self.config.automatic_annotations:
+            self.log.debug("Find annotations for: "+simple_annotation)
+            data = self._fin_annotation(self.config.annotations[simple_annotation]["regex"],self.config.annotations[simple_annotation]["separator"])
+            self.log.debug(data)
+
+        # details
 
         self.doc_data = r
 
@@ -183,7 +191,7 @@ class Parser:
 
         return tags
 
-    def _fin_annotation(self,regex=""):
+    def _fin_annotation(self,regex="",separator=False):
         """
         Make use of the passed regex to generate a json structure with the results of the scan
         :param regex:
@@ -208,16 +216,12 @@ class Parser:
 
                     if match:
 
-                        base_line = line.strip()[1:].strip().split(":")
-                        if len(base_line) > 2:
-                            # example: @tag: enroll : for quick initial enrolment of the system
-                            doc_key = base_line[1].strip()
-                            doc_data = base_line[2].strip()
+                        match_result = self._get_annotation_data(line,separator)
 
-                        else:
-                            # example: @author: Andres Bott
-                            doc_key = base_line[0].strip()
-                            doc_data = base_line[1].strip()
+                        if match_result is None:
+                            continue
+                        doc_key = match_result[0]
+                        doc_data = match_result[1]
 
                         item = Parser._gen_tag_doc(doc_key, text=doc_data, role=role, file=file,
                                                            line=line_number)
@@ -244,4 +248,45 @@ class Parser:
                         break
                 fh.close()
         return r
+
+    def _get_annotation_data(self,line,separator=False):
+        """
+        make some string conversion on a line in order to get the relevant data
+        :param line:
+        :return: [key,value]
+        """
+        r = []
+
+        annotation_start = line.find("@")
+        if annotation_start == -1:
+            return None
+        line = line[annotation_start:]
+        space = line.find(" ")
+        annotation_name = line[1:space]
+        line = line[space:].strip()
+
+
+
+        if separator is not False:
+            line = line.split(separator)
+            if len(line) > 1:
+                # example:
+                # @tag enroll : for quick initial enrolment of the system
+                r = [
+                    line[0].strip(),
+                    line[1].strip()
+                ]
+
+            else:
+                return None
+        else:
+            # @author Andres Bott
+            r = [
+                annotation_name,
+                line.strip()
+            ]
+        return r
+
+
+
 

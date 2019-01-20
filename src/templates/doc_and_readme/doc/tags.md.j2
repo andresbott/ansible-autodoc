@@ -8,7 +8,7 @@
     {% endif %}
 {% endfor %}
 
-## Roles Tags:
+## Roles tags:
 {% for role,role_value in tags._roles_.items() %}{% if role != "_ansible_playbook_" %}
 ### {{ role }}:
 {% for tag,value in role_value.items() %}
