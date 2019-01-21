@@ -45,8 +45,6 @@ this is still not implemented, just ideas
 
 `Nothing here`
 
-
-
 ## Generate Documentation
 
 ```$xslt
@@ -86,6 +84,10 @@ specify the location of the same in the configuration file.
   * Basic functionality with tag annotations working
   * simple annotations: "author", "description" and "todo2 also working
 
+# Todo
+* improve the default templates : ongoing task
+* improve the documentation : ongoing task
+* add testing, coverage, travis
 
 # Build
 clean:
