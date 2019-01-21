@@ -1,0 +1,46 @@
+# ============================================================
+# TODO (variables: todo)
+# ============================================================
+
+{% for section in todo._keys_ %}
+    {% if section == "_undef_" %}
+Todos without a section:
+        {% for item in todo._all_._items_ %}
+            {% if item.key is defined and item.key == section %}
+                {% if item.role == "_ansible_playbook_" %}
+* [<playbook>]:{{ "\t\t" |e }}{{ item.text }}
+                {% else %}
+                    {% if item.role | length > 5 %}
+* [{{ item.role }}]:{{ "\t" |e }}{{ item.text }}
+                    {% elif item.role | length > 4 %}
+* [{{ item.role }}]:{{ "\t\t" |e }}{{ item.text }}
+                    {% else %}
+* [{{ item.role }}]:{{ "\t\t\t" |e }}{{ item.text }}
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endfor %}
+{% for section in todo._keys_ %}
+    {% if section != "_undef_" %}
+{{ section | title }}
+        {% for item in todo._all_._items_ %}
+            {% if item.key is defined and item.key == section %}
+                {% if item.role == "_ansible_playbook_" %}
+* [<playbook>]:{{ "\t\t" |e }}{{ item.text }}
+                {% else %}
+                    {% if item.role | length > 5 %}
+* [{{ item.role }}]:{{ "\t" |e }}{{ item.text }}
+                    {% elif item.role | length > 4 %}
+* [{{ item.role }}]:{{ "\t\t" |e }}{{ item.text }}
+                    {% else %}
+* [{{ item.role }}]:{{ "\t\t\t" |e }}{{ item.text }}
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endfor %}

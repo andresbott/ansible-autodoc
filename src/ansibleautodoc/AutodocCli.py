@@ -34,13 +34,16 @@ class AnsibleAutodoc:
         parser.add_argument('project_dir', nargs='?', default=os.getcwd(),help="Project directory to scan, "
                                                                                "if empty current working will be used.")
         parser.add_argument('-C',"--conf", nargs='?', default="",help="specify an configuration file")
-        parser.add_argument('-o', action="store", dest="output", type=str,help='Define the destination '
+        parser.add_argument('-o', action="store", dest="output", type=str, help='Define the destination '
                                                                                'folder of your documenation')
         parser.add_argument('-y', action='store_true', help='overwrite the output without asking')
 
         parser.add_argument('-D',"--dry", action='store_true', help='Dry runt without writing')
 
         parser.add_argument("--sample-config", action='store_true', help='Print the sample configuration yaml file')
+
+        parser.add_argument('-p', nargs='?', default="all", help='use print template instead of writing to files,'
+                                                                 'You need to pass a section, use all for everything')
 
         debug_level = parser.add_mutually_exclusive_group()
         debug_level.add_argument('-v', action='store_true', help='Set debug level to info')
@@ -100,6 +103,10 @@ class AnsibleAutodoc:
             if self.log.log_level > 1:
                 self.log.set_level(1)
                 self.log.info("Running in Dry mode: Therefore setting log level at least to INFO")
+
+        # Print template
+        if args.p is not None:
+            self.config.use_print_template = args.p
 
         # output dir
         if args.output is not None:

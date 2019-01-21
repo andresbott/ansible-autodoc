@@ -66,6 +66,8 @@ excluded_roles_dirs: []
     template = ""
     # flag to ask if files can be overwritten
     template_overwrite = False
+    # flag to use the cli print template
+    use_print_template = False
 
     # don't modify any file
     dry_run = False
@@ -104,30 +106,26 @@ excluded_roles_dirs: []
     ]
 
     # annotation search patterns
+
+    # for any pattern like ' # @annotation: [annotation_key] # description '
+    # name = annotation ( without "@" )
+    # allow_multiple = True allow to repeat the same annotation, i.e. @todo
     annotations = {
-        # matches "# @tag <tagname> : <tag description>"
-        "tag":{
-            "name":"tag", # the name annotation
-            "regex":"(\#\ *\@tag\ +.*\:\ *.*)", # regex to match it
-            "separator":":" # separator to split key from value (the annotation is NOT user as key)
+        "tag": {
+            "name": "tag",
         },
-        # matches "# @author Author Name"
-        "author":{
-            "name":"author",
-            "regex":"(\#\ *\@author\ +.*)",
-            "separator":False
+        "author": {
+            "name": "author",
         },
-        # matches "# @description some description"
-        "description":{
-            "name":"description",
-            "regex":"(\#\ *\@description\ +.*)",
-            "separator":False
+        "description": {
+            "name": "description",
         },
-        # matches "# @todo Task to be done"
         "todo":{
-            "name":"todo",
-            "regex":"(\#\ *\@todo\ +.*)",
-            "separator":False
+            "name": "todo",
+            "allow_multiple":True,
+        },
+        "var":{
+            "name": "var",
         },
     }
 
@@ -137,12 +135,15 @@ excluded_roles_dirs: []
         "author",
         "description",
         "todo",
+        "var",
     ]
 
     def __init__(self):
         self.script_base_dir = os.path.dirname(os.path.realpath(__file__))
 
     def get_output_dir(self):
+        if self.use_print_template:
+            return ""
         if self.output_dir == "":
             return os.path.realpath(self.base_dir+"/"+self.default_output_dir)
         elif os.path.isabs(self.output_dir):
@@ -151,6 +152,9 @@ excluded_roles_dirs: []
             return os.path.realpath(self._config_file_dir+"/"+self.output_dir)
 
     def get_template_base_dir(self):
+        if self.use_print_template:
+            return os.path.realpath(self.script_base_dir+"/../templates/cliprint")
+
         if self.template == "":
             template = self.default_template
         else:

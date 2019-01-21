@@ -27,16 +27,21 @@ pip install ansible-autodoc
 
 Use the following annotations in your playbooks and roles
 
-* tags: `# @tag tagname : description` to annotate tags
-* author: `# @author Author Name` to annotate the author of playbook or role
-* description: `# @description Project description goes here` to annotate the project description
-* todo: `# @todo Taskt that need to be done` to annotate a todo
+* author: `# @author: Author Name` to annotate the author of playbook or role
+* description: `# @description: Project description goes here` to annotate the project description
+* todo: `# @todo: section #Taskt that need to be done` to annotate a todo
+* tags: `# @tag: tagname # description` to annotate tags
+* variables: `# @var: varname: ["some_defaut","other"] # Description of the variables` to annotate a variables
 
 ### Not implemented:
 this is still not implemented, just an idea
-* Role Variables `# @var[group] var_name : variable description` to annotate a variable
-  how to add multi line example? match # @example:  and finish on the next linie that does not 
-  start with # 
+* example: the idea is that after every annotation, we can define an example block, linked to the annotation.
+```$xslt
+# @example: title # Some description
+# here comes some 
+# multi line block
+# @end
+``` 
 
 
 ## Generate Documentation
@@ -65,8 +70,14 @@ specify the location of the same in the configuration file.
 
  
 # changelog 
+2019/01/21 - Version 0.4.1
+  * Added print template to stdout, useful for project review and development
+  * Added @var annotation
+
+
 2019/01/20 - Version 0.4.0
-  * Basic functionality with tags working
+  * Basic functionality with tag annotations working
+  * simple annotations: "author", "description" and "todo2 also working
 
 
 # Build

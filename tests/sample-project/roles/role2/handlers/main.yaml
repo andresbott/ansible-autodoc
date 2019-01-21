@@ -1,1 +1,26 @@
 ---
+#============================================================================================================
+# Role2
+#============================================================================================================
+# @todo: improvement # this is something to refactor
+- block:
+
+  - name: Install some task
+    apt:
+      name:
+        - aptitude
+      state: present
+      update_cache: yes
+      install_recommends: no
+    notify: start fail2ban
+    when: extra_install_fail2ban
+
+  tags:
+    - role_1
+    - untagged
+    - duplicated_tag
+    - playbook_duplicated
+
+
+
+

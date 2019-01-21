@@ -1,13 +1,13 @@
 ---
 # ====================================
-# @author Role 1
+# @author: Role 1
 # @description: Description of role1
 # ====================================
 #============================================================================================================
 # Role1
 #============================================================================================================
-# @tag duplicated_tag : description of duplicated_tag
-# @tag role_1 : description of role_1
+# @tag: duplicated_tag  # description of duplicated_tag
+# @tag: role_1 # description of role_1
 - block:
 
   - name: Install some task

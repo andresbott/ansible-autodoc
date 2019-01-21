@@ -16,9 +16,10 @@ class Parser:
     doc_data = None
 
     @staticmethod
-    def _gen_tag_doc(tag,text="",role="",file="",line=""):
+    def _anottation(key,value="",text="",role="",file="",line=""):
         return {
-            "tag":tag,
+            "key":key,
+            "value":value,
             "text":text,
             "role":role,
             "file":file,
@@ -74,23 +75,26 @@ class Parser:
         """
         Generate the documentation data object
         """
-        r = {}
+        r = {
+            "is_role": self.config.is_role,
+            "is_print": self.config.use_print_template
+        }
 
-        # tags
+        # take care of special use case tags
         self.log.info("Searching for tags in use in the project...")
         tags = self._find_tags_in_yaml()
-        self.log.info("Parsing tag annotations...")
-        tag_annotations = self._fin_annotation(self.config.annotations["tag"]["regex"],self.config.annotations["tag"]["separator"])
+        self.log.info("Finding annotations for: @tag")
+        tag_annotations = self._fin_annotation(self.config.annotations["tag"])
         parsed_tags = self._parse_tag(tags,tag_annotations)
         self.log.trace(parsed_tags,"Parsed Tags")
         r["tags"] = parsed_tags
 
+        # simple annotations that follow all the same pattern, like author and description
         for simple_annotation in self.config.automatic_annotations:
-            self.log.debug("Find annotations for: "+simple_annotation)
-            data = self._fin_annotation(self.config.annotations[simple_annotation]["regex"],self.config.annotations[simple_annotation]["separator"])
-            self.log.debug(data)
-
-        # details
+            self.log.info("Finding annotations for: @"+simple_annotation)
+            data = self._fin_annotation(self.config.annotations[simple_annotation])
+            self.log.trace(data, "Results for: @"+simple_annotation)
+            r[simple_annotation] = data
 
         self.doc_data = r
 
@@ -166,7 +170,7 @@ class Parser:
                         for found_tag in tags_found:
                             if found_tag not in self.config.excluded_tags:
 
-                                tag = Parser._gen_tag_doc(found_tag,role=file_group_key)
+                                tag = Parser._anottation(found_tag,role=file_group_key)
 
                                 # all tags
                                 if found_tag not in tags["_all_"].keys():
@@ -191,7 +195,7 @@ class Parser:
 
         return tags
 
-    def _fin_annotation(self,regex="",separator=False):
+    def _fin_annotation(self,rules=False):
         """
         Make use of the passed regex to generate a json structure with the results of the scan
         :param regex:
@@ -201,9 +205,9 @@ class Parser:
             "_all_" : {},
             "_duplicate_" : {},
             "_roles_": {},
+            "_keys_": [],
         }
-        if regex == "":
-            return r
+        regex = "(\#\ *\@"+rules["name"]+"\ *\: *.*)"
 
         for role, files_in_role in self.files_registry.get_files().items():
 
@@ -216,32 +220,45 @@ class Parser:
 
                     if match:
 
-                        match_result = self._get_annotation_data(line,separator)
+                        item = self._get_annotation_data(line, rules)
+                        item["role"] = role
+                        item["file"] = file
+                        item["line"] = line_number
 
-                        if match_result is None:
-                            continue
-                        doc_key = match_result[0]
-                        doc_data = match_result[1]
+                        key = item["key"]
 
-                        item = Parser._gen_tag_doc(doc_key, text=doc_data, role=role, file=file,
-                                                           line=line_number)
+                        if key not in r["_keys_"]:
+                            r["_keys_"].append(key)
 
-                        # all files
-                        if doc_key not in r["_all_"].keys():
-                            r["_all_"][doc_key] = item
+                        if "allow_multiple" in rules.keys() and rules["allow_multiple"]:
+                            # all files
+                            if "_items_" not in r["_all_"].keys():
+                                r["_all_"]["_items_"]=[]
+                            r["_all_"]["_items_"].append(item)
+
+                            # per role
+                            if role not in r["_roles_"].keys():
+                                r["_roles_"][role] = []
+                            r["_roles_"][role].append(item)
 
                         else:
-                            # duplicated
-                            if doc_key not in r["_duplicate_"]:
-                                r["_duplicate_"][doc_key] = []
-                                r["_duplicate_"][doc_key].append(r["_all_"][doc_key])
-                            r["_duplicate_"][doc_key].append(item)
 
-                        # per role
-                        if role not in r["_roles_"].keys():
-                            r["_roles_"][role] = {}
-                        if doc_key not in r["_roles_"][role].keys():
-                            r["_roles_"][role][doc_key] = item
+                            # all files
+                            if key not in r["_all_"].keys():
+                                r["_all_"][key] = item
+
+                            else:
+                                # duplicated
+                                if key not in r["_duplicate_"]:
+                                    r["_duplicate_"][key] = []
+                                    r["_duplicate_"][key].append(r["_all_"][key])
+                                r["_duplicate_"][key].append(item)
+
+                            # per role
+                            if role not in r["_roles_"].keys():
+                                r["_roles_"][role] = {}
+                            if key not in r["_roles_"][role].keys():
+                                r["_roles_"][role][key] = item
 
                     line_number += 1
                     if not line:
@@ -249,43 +266,49 @@ class Parser:
                 fh.close()
         return r
 
-    def _get_annotation_data(self,line,separator=False):
+    def _get_annotation_data(self,line,rules=None):
         """
         make some string conversion on a line in order to get the relevant data
         :param line:
         :return: [key,value]
         """
         r = []
+        if not rules:
+            return r
+        annotation_name= rules["name"]
 
-        annotation_start = line.find("@")
-        if annotation_start == -1:
-            return None
-        line = line[annotation_start:]
-        space = line.find(" ")
-        annotation_name = line[1:space]
-        line = line[space:].strip()
+        # step1 remove the annotation
+        reg1 =  "(\#\ *\@"+annotation_name+"\ *\: *)"
+        line1 = re.sub(reg1, '', line)
 
+        # step2 split annotation and comment by #
+        parts = line1.split("#")
 
+        value = ""
+        if len(parts)>1:
+            key = parts[0].strip()
 
-        if separator is not False:
-            line = line.split(separator)
-            if len(line) > 1:
-                # example:
-                # @tag enroll : for quick initial enrolment of the system
-                r = [
-                    line[0].strip(),
-                    line[1].strip()
-                ]
+            sub_parts = key.split(":")
 
-            else:
-                return None
+            if len(sub_parts) > 1:
+                key = sub_parts[0].strip()
+                value = sub_parts[1].strip()
+
+            text = parts[1].strip()
+
         else:
-            # @author Andres Bott
-            r = [
-                annotation_name,
-                line.strip()
-            ]
-        return r
+            key = annotation_name
+            text = parts[0].strip()
+
+        if len(key) == 0:
+            key= "_undef_"
+        item = Parser._anottation(
+            key,
+            value=value,
+            text=text
+        )
+
+        return item
 
 
 

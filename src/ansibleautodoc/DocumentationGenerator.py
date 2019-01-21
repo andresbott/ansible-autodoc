@@ -6,7 +6,7 @@ import sys
 
 from ansibleautodoc.Utils import SingleLog,FileUtils
 from ansibleautodoc.Config import SingleConfig
-from jinja2 import Environment
+from jinja2 import Environment,FileSystemLoader
 
 
 class Generator:
@@ -20,12 +20,15 @@ class Generator:
         self.log = SingleLog()
 
         self.log.info("Using template dir: "+self.config.get_template_base_dir())
-        self.log.info("Using output dir: "+self.config.get_output_dir())
 
         self.doc_data = doc_data
-
         self._scan_template()
-        self._write_doc()
+
+        if self.config.use_print_template:
+            self.print_to_cli()
+        else:
+            self.log.info("Using output dir: "+self.config.get_output_dir())
+            self._write_doc()
 
     def _scan_template(self):
         """
@@ -38,8 +41,11 @@ class Generator:
         for file in glob.iglob(base_dir+'/**/*.'+self.extension, recursive=True):
 
             relative_file = file[len(base_dir)+1:]
-            self.log.trace("[GENERATOR] found template file: "+relative_file)
-            self.template_files.append(relative_file)
+            if relative_file[:1] != "_":
+                self.log.trace("[GENERATOR] found template file: "+relative_file)
+                self.template_files.append(relative_file)
+            else:
+                self.log.debug("[GENERATOR] ignoring template file: "+relative_file)
 
     def _create_dir(self, dir):
         if not self.config.dry_run:
@@ -76,10 +82,21 @@ class Generator:
                     data = template.read()
 
                     if data is not None:
-                        data = Environment(lstrip_blocks=True, trim_blocks=True).from_string(data).render(doc_data)
+                        data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(doc_data)
 
                         if not self.config.dry_run:
                             with open(doc_file, 'w') as outfile:
                                 outfile.write(data)
                         else:
                             self.log.info("[GENERATOR][DRY] Writing to: "+doc_file)
+
+    def print_to_cli(self):
+
+        for file in self.template_files:
+            source_file = self.config.get_template_base_dir()+"/"+file
+            with open(source_file, 'r') as template:
+                data = template.read()
+
+                if data is not None:
+                    data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(self.doc_data)
+                    print(data)
