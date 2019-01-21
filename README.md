@@ -32,9 +32,6 @@ Use the following annotations in your playbooks and roles
 * todo: `# @todo: section #Taskt that need to be done` to annotate a todo
 * tags: `# @tag: tagname # description` to annotate tags
 * variables: `# @var: varname: ["some_defaut","other"] # Description of the variables` to annotate a variables
-
-### Not implemented:
-this is still not implemented, just an idea
 * example: the idea is that after every annotation, we can define an example block, linked to the annotation.
 ```$xslt
 # @example: title # Some description
@@ -42,6 +39,12 @@ this is still not implemented, just an idea
 # multi line block
 # @end
 ``` 
+
+### Not implemented:
+this is still not implemented, just ideas 
+
+`Nothing here`
+
 
 
 ## Generate Documentation
@@ -70,6 +73,10 @@ specify the location of the same in the configuration file.
 
  
 # changelog 
+2019/01/21 - Version 0.4.2
+  * Added example block annotation
+
+
 2019/01/21 - Version 0.4.1
   * Added print template to stdout, useful for project review and development
   * Added @var annotation

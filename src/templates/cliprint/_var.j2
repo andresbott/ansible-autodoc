@@ -18,6 +18,13 @@ Playbook Variables:
         {% else %}
 - {{ item.key }}: {{ item.value }}{{ "\t\t\t\t" |e }} {{ item.text }}
         {% endif %}
+        {% if item.example is defined %}
+Example: {{ item.example.key }} ::   {{ item.example.text }}
+            {% for example_line in item.example.multi_line %}
+{{ example_line }}
+            {% endfor %}
+        {% endif %}
+
     {% endfor %}
 
 {% endfor %}
@@ -35,3 +42,6 @@ Duplicated Variables:
 # ============================================================
 No Duplicated Variables.
 {% endif %}
+{#{{ var | pprint }}#}
+
+

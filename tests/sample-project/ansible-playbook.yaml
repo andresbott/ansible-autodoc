@@ -14,4 +14,9 @@
 
 # @todo: bug # some bug description
 # @todo: # No section
+
 # @todo: # No section2
+# @example:immediate fix: # This is a text sentence providing more information about using this variable
+# here comes some
+# multi line block
+# @end

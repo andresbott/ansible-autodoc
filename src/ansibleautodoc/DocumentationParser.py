@@ -195,7 +195,7 @@ class Parser:
 
         return tags
 
-    def _fin_annotation(self,rules=False):
+    def _fin_annotation(self, rules):
         """
         Make use of the passed regex to generate a json structure with the results of the scan
         :param regex:
@@ -211,60 +211,90 @@ class Parser:
 
         for role, files_in_role in self.files_registry.get_files().items():
 
+            last_annotation_item = None
+            is_block_content = None
+
             for file in files_in_role:
                 fh = open(file)
                 line_number = 1
                 while True:
                     line = fh.readline()
-                    match = re.match(regex, line)
 
-                    if match:
+                    if re.match(self.config.annotations["example"]["regex"], line):
+                        # match for a block object like @example
+                        # if we match, then we use the previous defined item
+                        if last_annotation_item:
+                            a_item = self._get_annotation_data(line, self.config.annotations["example"])
+                            a_item["role"] = role
+                            a_item["file"] = file
+                            a_item["line"] = line_number
+                            a_item["multi_line"] = []
+                            is_block_content = a_item
 
+                    elif (re.match(self.config.annotations["block_end"]["regex"], line) or line.strip()[:1] != "#" ) \
+                            and is_block_content:
+                        # match for a end of block object like @example
+                        # assign the collected lines to last annotation content
+                        last_annotation_item["example"] = is_block_content
+                        is_block_content = None
+                        last_annotation_item = None
+
+                    elif is_block_content and line.strip()[:1] == "#":
+                        # add the lines that start with a comment, minus the comment
+                        is_block_content["multi_line"].append(line.strip()[1:])
+
+                    elif re.match(regex, line):
+                        # regular lines matching
                         item = self._get_annotation_data(line, rules)
                         item["role"] = role
                         item["file"] = file
                         item["line"] = line_number
 
-                        key = item["key"]
+                        last_annotation_item = item
 
-                        if key not in r["_keys_"]:
-                            r["_keys_"].append(key)
-
-                        if "allow_multiple" in rules.keys() and rules["allow_multiple"]:
-                            # all files
-                            if "_items_" not in r["_all_"].keys():
-                                r["_all_"]["_items_"]=[]
-                            r["_all_"]["_items_"].append(item)
-
-                            # per role
-                            if role not in r["_roles_"].keys():
-                                r["_roles_"][role] = []
-                            r["_roles_"][role].append(item)
-
-                        else:
-
-                            # all files
-                            if key not in r["_all_"].keys():
-                                r["_all_"][key] = item
-
-                            else:
-                                # duplicated
-                                if key not in r["_duplicate_"]:
-                                    r["_duplicate_"][key] = []
-                                    r["_duplicate_"][key].append(r["_all_"][key])
-                                r["_duplicate_"][key].append(item)
-
-                            # per role
-                            if role not in r["_roles_"].keys():
-                                r["_roles_"][role] = {}
-                            if key not in r["_roles_"][role].keys():
-                                r["_roles_"][role][key] = item
+                        self._assign_to_r(r,item,role,rules)
 
                     line_number += 1
                     if not line:
                         break
                 fh.close()
         return r
+
+    def _assign_to_r(self,r,item,role,rules):
+        key = item["key"]
+
+        if key not in r["_keys_"]:
+            r["_keys_"].append(key)
+
+        if "allow_multiple" in rules.keys() and rules["allow_multiple"]:
+            # all files
+            if "_items_" not in r["_all_"].keys():
+                r["_all_"]["_items_"]=[]
+            r["_all_"]["_items_"].append(item)
+
+            # per role
+            if role not in r["_roles_"].keys():
+                r["_roles_"][role] = []
+            r["_roles_"][role].append(item)
+
+        else:
+
+            # all files
+            if key not in r["_all_"].keys():
+                r["_all_"][key] = item
+
+            else:
+                # duplicated
+                if key not in r["_duplicate_"]:
+                    r["_duplicate_"][key] = []
+                    r["_duplicate_"][key].append(r["_all_"][key])
+                r["_duplicate_"][key].append(item)
+
+            # per role
+            if role not in r["_roles_"].keys():
+                r["_roles_"][role] = {}
+            if key not in r["_roles_"][role].keys():
+                r["_roles_"][role][key] = item
 
     def _get_annotation_data(self,line,rules=None):
         """
@@ -304,8 +334,8 @@ class Parser:
             key= "_undef_"
         item = Parser._anottation(
             key,
-            value=value,
-            text=text
+            value = value,
+            text = text
         )
 
         return item

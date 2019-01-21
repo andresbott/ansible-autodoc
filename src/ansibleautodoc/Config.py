@@ -127,6 +127,14 @@ excluded_roles_dirs: []
         "var":{
             "name": "var",
         },
+        "example":{
+            "name": "example",
+            "regex": "(\#\ *\@example\ *\: *.*)"
+        },
+        "block_end":{
+            "name": "block_end",
+            "regex": "(\#\ *\@end\ *)"
+        }
     }
 
     # some of the annotations defined above dont require extra code for working,
@@ -137,6 +145,8 @@ excluded_roles_dirs: []
         "todo",
         "var",
     ]
+
+
 
     def __init__(self):
         self.script_base_dir = os.path.dirname(os.path.realpath(__file__))

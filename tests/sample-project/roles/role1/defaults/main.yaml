@@ -3,4 +3,22 @@
 # Role1
 #============================================================================================================
 # @var: duplicated_var: "something" # this is the first sample var
+# @example: duplicated var usage: # This is a text sentence providing more information about using this variable
+# here comes some
+# multi line block
+
 config1: yes
+
+# @var: var2: "something" # this is the first sample var
+# @example: Title: # This is a text sentence providing more information about using this variable
+# here comes some
+ # multi line block
+ # multi line block
+ # multi line block
+    # multi line block
+# @end:
+
+var2: yes
+
+# @var: var3 # this is the first sample var3
+var3: no
