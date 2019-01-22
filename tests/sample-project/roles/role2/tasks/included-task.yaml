@@ -6,6 +6,8 @@
 # @tag: duplicated_tag # description of duplicated_tag
 # @tag: configuration # Duplicated description
 
+# @task: enroll # Example: create ssh keys
+
 - block:
 
   - name: Install

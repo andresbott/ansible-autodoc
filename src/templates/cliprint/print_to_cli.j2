@@ -2,6 +2,9 @@
 {% if is_print is defined and (is_print == "all"  or is_print == "info" )%}
     {% include '_description.j2'  %}
 {% endif %}
+{% if is_print is defined and (is_print == "all"  or is_print == "action" or is_print == "actions" )%}
+    {% include '_action.j2'  %}
+{% endif %}
 {% if is_print is defined and (is_print == "all"  or is_print == "tags" )%}
     {% include '_tags.j2'  %}
 {% endif %}

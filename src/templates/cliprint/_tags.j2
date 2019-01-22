@@ -3,11 +3,7 @@
 # ============================================================
 
 {% for role,role_value in tags._roles_.items() %}
-    {% if role != "_ansible_playbook_" %}
-Role: "{{ role }}":
-    {% else %}
-Playbook Tags:
-    {% endif %}
+    {% include '_role_head.j2'  %}
     {% for tag,value in role_value.items() %}
         {% if tag |length > 13 %}
 - {{ tag }}{{ "\t" |e }} {{ value.text }}
@@ -32,8 +28,8 @@ Duplicated Tags:
         {% endfor %}
     {% endfor %}
 {% else %}
-# ============================================================
-No Duplicated Tags.
+>>>     No Duplicated Tags.             <<<
+
 {% endif %}
 {% if tags._yaml_duplicate_.items() | length > 0 and not is_role%}
 # ============================================================

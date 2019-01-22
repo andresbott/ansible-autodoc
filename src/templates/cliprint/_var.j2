@@ -1,30 +1,24 @@
 # ============================================================
 # Variables (variable: var)
 # ============================================================
-
 {% for role,role_value in var._roles_.items() %}
-    {% if role != "_ansible_playbook_" %}
-Variables in role "{{ role }}":
-    {% else %}
-Playbook Variables:
-    {% endif %}
+    {% include '_role_head.j2'  %}
     {% for k,item in role_value.items() %}
-        {% if item.key |length > 13 %}
+        {% if item.key | length > 13 %}
 - {{ item.key }}: {{ item.value }} {{ "\t" |e }} {{ item.text }}
-        {% elif tag |length > 5 %}
+        {% elif tag | length > 5 %}
 - {{ item.key }}: {{ item.value }}{{ "\t\t" |e }} {{ item.text }}
-        {% elif tag |length > 4 %}
+        {% elif tag | length > 4 %}
 - {{ item.key }}: {{ item.value }}{{ "\t\t\t" |e }} {{ item.text }}
         {% else %}
 - {{ item.key }}: {{ item.value }}{{ "\t\t\t\t" |e }} {{ item.text }}
         {% endif %}
         {% if item.example is defined %}
-Example: {{ item.example.key }} ::   {{ item.example.text }}
+  Example: {{ item.example.key }} ::   {{ item.example.text }}
             {% for example_line in item.example.multi_line %}
-{{ example_line }}
+    {{ example_line }}
             {% endfor %}
         {% endif %}
-
     {% endfor %}
 
 {% endfor %}

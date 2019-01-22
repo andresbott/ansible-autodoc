@@ -71,6 +71,10 @@ specify the location of the same in the configuration file.
 
  
 # changelog 
+2019/01/22 - Version 0.4.2
+  * FIX: document parsing when some annotations are not present 
+  * improvements on the cli template
+  
 2019/01/21 - Version 0.4.2
   * Added example block annotation
 
@@ -85,9 +89,15 @@ specify the location of the same in the configuration file.
   * simple annotations: "author", "description" and "todo2 also working
 
 # Todo
+* add testing, coverage, travis
+* add template cli parameter
+
+### improvements
 * improve the default templates : ongoing task
 * improve the documentation : ongoing task
-* add testing, coverage, travis
+* add @meta tag, for enabling and disabling parts of the template & document
+* add annotation personalization by extending annotation definition in configuration file
+* document annotation personalization
 
 # Build
 clean:

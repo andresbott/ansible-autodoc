@@ -66,9 +66,10 @@ class Generator:
 
         if len(files_to_overwite) > 0 and self.config.template_overwrite is False:
             SingleLog.print("This files will be overwritten:",files_to_overwite)
-            resulst = FileUtils.query_yes_no("do you want to continue?")
-            if resulst != "yes":
-                sys.exit()
+            if not self.config.dry_run:
+                resulst = FileUtils.query_yes_no("do you want to continue?")
+                if resulst != "yes":
+                    sys.exit()
 
         for file in self.template_files:
             doc_file = self.config.get_output_dir()+"/"+file[:-len(self.extension)-1]

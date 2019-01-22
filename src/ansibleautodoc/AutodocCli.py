@@ -42,8 +42,9 @@ class AnsibleAutodoc:
 
         parser.add_argument("--sample-config", action='store_true', help='Print the sample configuration yaml file')
 
-        parser.add_argument('-p', nargs='?', default="all", help='use print template instead of writing to files,'
-                                                                 'You need to pass a section, use all for everything')
+        parser.add_argument('-p', nargs='?', default="_unset_", help='use print template instead of writing to files, '
+                                                                     'sections: all, info, tags, todo, var')
+
 
         debug_level = parser.add_mutually_exclusive_group()
         debug_level.add_argument('-v', action='store_true', help='Set debug level to info')
@@ -105,7 +106,11 @@ class AnsibleAutodoc:
                 self.log.info("Running in Dry mode: Therefore setting log level at least to INFO")
 
         # Print template
-        if args.p is not None:
+        if args.p == "_unset_":
+            pass
+        elif args.p is None:
+            self.config.use_print_template = "all"
+        else:
             self.config.use_print_template = args.p
 
         # output dir

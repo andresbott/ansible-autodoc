@@ -1,13 +1,11 @@
 # ============================================================
 # Project Description (variables: author,description)
 # ============================================================
-
 {% for role,role_value in author._roles_.items() %}
-    {% if role == "_ansible_playbook_" %}
-Playbook:
-    {% else %}
-Role: "{{ role }}"
-    {% endif %}
+        {% if role_value.author is defined or(  description._roles_[role] is defined
+        and  description._roles_[role].description is defined ) %}
+        {% include '_role_head.j2'  %}
+{% endif %}
     {% if role_value.author is defined  and role_value.author.text is defined %}
 Author:  {{ "\t" |e }}{{ role_value.author.text }}
     {% endif %}

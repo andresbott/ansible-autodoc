@@ -5,7 +5,8 @@
 # @tag: role2 # description of role2
 # @tag: configuration # description of configuration
 
-
+# @task: Install # Install all the needed Apps
+# @todo: Install # Create some users
 - block:
 
   - name: Insta

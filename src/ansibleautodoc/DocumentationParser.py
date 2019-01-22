@@ -2,6 +2,7 @@
 
 import yaml
 import re
+import pprint
 
 from ansibleautodoc.Utils import SingleLog
 from ansibleautodoc.Config import SingleConfig
@@ -90,7 +91,12 @@ class Parser:
         r["tags"] = parsed_tags
 
         # simple annotations that follow all the same pattern, like author and description
-        for simple_annotation in self.config.automatic_annotations:
+        automatic_annotations = []
+        for k, automatic_annotation in self.config.annotations.items():
+            if "automatic" in automatic_annotation.keys() and automatic_annotation:
+                automatic_annotations.append(automatic_annotation["name"])
+
+        for simple_annotation in automatic_annotations:
             self.log.info("Finding annotations for: @"+simple_annotation)
             data = self._fin_annotation(self.config.annotations[simple_annotation])
             self.log.trace(data, "Results for: @"+simple_annotation)
@@ -132,7 +138,8 @@ class Parser:
                 if role in tag_annotations["_roles_"].keys() and yaml_tag_key in tag_annotations["_roles_"][role].keys():
                     r["_roles_"][role][yaml_tag_key] = tag_annotations["_roles_"][role][yaml_tag_key]
                 # if defined in the playbook => overwrite
-                elif not self.config.is_role and yaml_tag_key in tag_annotations["_roles_"]["_ansible_playbook_"].keys():
+                elif not self.config.is_role and "_ansible_playbook_" in tag_annotations["_roles_"].keys() \
+                        and yaml_tag_key in tag_annotations["_roles_"]["_ansible_playbook_"].keys():
                     r["_roles_"][role][yaml_tag_key] = tag_annotations["_roles_"]["_ansible_playbook_"][yaml_tag_key]
                 else:
                     r["_roles_"][role][yaml_tag_key] = yaml_tag_value
@@ -203,9 +210,7 @@ class Parser:
         r = {
             "_all_" : {},
             "_duplicate_" : {},
-            "_roles_": {
-                "_ansible_playbook_": {}
-            },
+            "_roles_": { },
             "_keys_": [],
         }
         regex = "(\#\ *\@"+rules["name"]+"\ *\: *.*)"
@@ -335,8 +340,8 @@ class Parser:
             key= "_undef_"
         item = Parser._anottation(
             key,
-            value = value,
-            text = text
+            value = value.strip(),
+            text = text.strip()
         )
 
         return item

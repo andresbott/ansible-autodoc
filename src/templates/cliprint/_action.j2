@@ -1,13 +1,13 @@
 # ============================================================
-# Todo (variables: todo)
+# Actions (variables: action)
 # ============================================================
-{% for section in todo._keys_ %}
+{% for section in action._keys_ %}
     {% if section == "_undef_" %}
-Todos without a section:
-        {% for item in todo._all_._items_ %}
+Actions without a section:
+        {% for item in action._all_._items_ %}
             {% if item.key is defined and item.key == section %}
                 {% if item.role == "_ansible_playbook_" %}
-* [< playbook >]:{{ "\t\t" |e }}{{ item.text }}
+* [<playbook>]:{{ "\t\t" |e }}{{ item.text }}
                 {% else %}
                     {% if item.role | length > 5 %}
 * [{{ item.role }}]:{{ "\t" |e }}{{ item.text }}
@@ -22,13 +22,13 @@ Todos without a section:
 
     {% endif %}
 {% endfor %}
-{% for section in todo._keys_ %}
+{% for section in action._keys_ %}
     {% if section != "_undef_" %}
 {{ section | title }}
-        {% for item in todo._all_._items_ %}
+        {% for item in action._all_._items_ %}
             {% if item.key is defined and item.key == section %}
                 {% if item.role == "_ansible_playbook_" %}
-* [< playbook >]:{{ "\t\t" |e }}{{ item.text }}
+* [<playbook>]:{{ "\t\t" |e }}{{ item.text }}
                 {% else %}
                     {% if item.role | length > 5 %}
 * [{{ item.role }}]:{{ "\t" |e }}{{ item.text }}

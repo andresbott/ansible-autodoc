@@ -6,7 +6,9 @@ from ansibleautodoc.Utils import Singleton
 
 class Config:
     sample_config = """---
-# autodoc.conf.yaml
+# About Ansible autodoc: Generate documentation from annotated playbooks and roles using templates
+# https://github.com/AndresBott/ansible-autodoc
+# filename: autodoc.conf.yaml
 
 # base directoy to scan, relative dir to configuration file 
 # base_dir: "./" 
@@ -16,7 +18,7 @@ output_dir: "./generated_doc"
 
 # directory containing templates, relative dir to configuration file, 
 # comment to use default build in ones
-template_dir: "./template" 
+# template_dir: "./template" 
 
 # template directory name within template_dir
 # build in "doc_and_readme" and "minimal_readme"
@@ -110,22 +112,32 @@ excluded_roles_dirs: []
     # for any pattern like ' # @annotation: [annotation_key] # description '
     # name = annotation ( without "@" )
     # allow_multiple = True allow to repeat the same annotation, i.e. @todo
+    # automatic = True this action will be parsed based on the annotation in name without calling the parse method
     annotations = {
         "tag": {
             "name": "tag",
         },
         "author": {
             "name": "author",
+            "automatic": True,
         },
         "description": {
             "name": "description",
+            "automatic": True,
         },
         "todo":{
             "name": "todo",
-            "allow_multiple":True,
+            "allow_multiple": True,
+            "automatic": True,
+        },
+        "action":{
+            "name": "action",
+            "allow_multiple": True,
+            "automatic": True,
         },
         "var":{
             "name": "var",
+            "automatic": True,
         },
         "example":{
             "name": "example",
@@ -137,14 +149,7 @@ excluded_roles_dirs: []
         }
     }
 
-    # some of the annotations defined above dont require extra code for working,
-    # this is a list of them
-    automatic_annotations = [
-        "author",
-        "description",
-        "todo",
-        "var",
-    ]
+
 
 
 
@@ -195,9 +200,10 @@ excluded_roles_dirs: []
             try:
                 self._config_file_dir = os.path.dirname(os.path.realpath(file))
                 data = yaml.load(yaml_file)
-                for item_to_configure in allow_to_overwrite:
-                    if item_to_configure in data.keys():
-                        self.__setattr__(item_to_configure,data[item_to_configure])
+                if data:
+                    for item_to_configure in allow_to_overwrite:
+                        if item_to_configure in data.keys():
+                            self.__setattr__(item_to_configure,data[item_to_configure])
 
             except yaml.YAMLError as exc:
                 print(exc)

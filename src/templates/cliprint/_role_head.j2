@@ -1,0 +1,5 @@
+{% if role != "_ansible_playbook_" %}
+>>>   {{ "\t" |e }}Role: {{ role }}{{ "\t\t" |e }}<<<
+{% elif role_value |length > 0  %}
+>>>   {{ "\t" |e }}Playbook: {{ "\t\t" |e }}<<<
+{% endif %}
