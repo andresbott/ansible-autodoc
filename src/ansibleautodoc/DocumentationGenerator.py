@@ -3,10 +3,12 @@
 import glob
 import os
 import sys
+import pprint
 
 from ansibleautodoc.Utils import SingleLog,FileUtils
 from ansibleautodoc.Config import SingleConfig
 from jinja2 import Environment,FileSystemLoader
+import jinja2.exceptions
 
 
 class Generator:
@@ -98,5 +100,16 @@ class Generator:
                 data = template.read()
 
                 if data is not None:
-                    data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(self.doc_data)
-                    print(data)
+                    try:
+                        data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(self.doc_data)
+                        print(data)
+                    except jinja2.exceptions.UndefinedError as e:
+                        self.log.error("Jinja2 templating error: <"+str(e)+"> when loading file: \""+file+"\", run in debug mode to see full except")
+                        if self.log.log_level < 1:
+                            raise
+                    except:
+                        print("Unexpected error:", sys.exc_info()[0])
+                        raise
+
+
+

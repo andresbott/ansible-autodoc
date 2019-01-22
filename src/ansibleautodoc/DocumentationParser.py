@@ -129,8 +129,7 @@ class Parser:
 
                 if role not in r["_roles_"].keys():
                     r["_roles_"][role] = {}
-
-                if yaml_tag_key in tag_annotations["_roles_"][role].keys():
+                if role in tag_annotations["_roles_"].keys() and yaml_tag_key in tag_annotations["_roles_"][role].keys():
                     r["_roles_"][role][yaml_tag_key] = tag_annotations["_roles_"][role][yaml_tag_key]
                 # if defined in the playbook => overwrite
                 elif not self.config.is_role and yaml_tag_key in tag_annotations["_roles_"]["_ansible_playbook_"].keys():
@@ -204,7 +203,9 @@ class Parser:
         r = {
             "_all_" : {},
             "_duplicate_" : {},
-            "_roles_": {},
+            "_roles_": {
+                "_ansible_playbook_": {}
+            },
             "_keys_": [],
         }
         regex = "(\#\ *\@"+rules["name"]+"\ *\: *.*)"

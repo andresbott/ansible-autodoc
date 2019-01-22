@@ -8,10 +8,12 @@ Playbook:
     {% else %}
 Role: "{{ role }}"
     {% endif %}
-    {% if role_value.author.text is defined %}
+    {% if role_value.author is defined  and role_value.author.text is defined %}
 Author:  {{ "\t" |e }}{{ role_value.author.text }}
     {% endif %}
-    {% if description._roles_[role].description.text is defined %}
+    {% if description._roles_[role] is defined
+    and description._roles_[role].description is defined
+    and description._roles_[role].description.text is defined %}
 Descriptions:  {{ "\t" |e }}{{ description._roles_[role].description.text }}
     {% endif %}
 
