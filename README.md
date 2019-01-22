@@ -72,6 +72,7 @@ specify the location of the same in the configuration file.
  
 # changelog 
 2019/01/22 - Version 0.4.2
+  * FIX: yaml load unicode files
   * FIX: document parsing when some annotations are not present 
   * improvements on the cli template
   

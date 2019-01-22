@@ -168,7 +168,7 @@ class Parser:
 
         for file_group_key, file_group_list in self.files_registry.get_files().items():
             for file in file_group_list:
-                with open(file, 'r') as yaml_file:
+                with open(file, 'r',encoding='utf8') as yaml_file:
                     try:
                         data = yaml.load(yaml_file)
                         tags_found = Parser.find_tag("tags",data)
@@ -221,7 +221,7 @@ class Parser:
             is_block_content = None
 
             for file in files_in_role:
-                fh = open(file)
+                fh = open(file,encoding='utf8')
                 line_number = 1
                 while True:
                     line = fh.readline()
