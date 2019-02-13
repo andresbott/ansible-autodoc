@@ -90,10 +90,12 @@ specify the location of the same in the configuration file.
   * simple annotations: "author", "description" and "todo2 also working
 
 # Todo
+* when a yaml file with a special char is templated, an UnicodeEncodeError will be thrown 
 * add testing, coverage, travis
 * add template cli parameter
 
 ### improvements
+* instead of using different annotation for author, description etc, use one annotation @info: <section> # value 
 * improve the default templates : ongoing task
 * improve the documentation : ongoing task
 * add @meta tag, for enabling and disabling parts of the template & document

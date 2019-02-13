@@ -83,15 +83,26 @@ class Generator:
             if os.path.exists(source_file) and os.path.isfile(source_file):
                 with open(source_file, 'r') as template:
                     data = template.read()
-
                     if data is not None:
-                        data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(doc_data)
+                        try:
+                            data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(doc_data)
 
-                        if not self.config.dry_run:
-                            with open(doc_file, 'w') as outfile:
-                                outfile.write(data)
-                        else:
-                            self.log.info("[GENERATOR][DRY] Writing to: "+doc_file)
+                            if not self.config.dry_run:
+                                with open(doc_file, 'w') as outfile:
+                                    outfile.write(data)
+                                    self.log.info("Writing to: "+doc_file)
+                            else:
+                                self.log.info("[GENERATOR][DRY] Writing to: "+doc_file)
+                        except jinja2.exceptions.UndefinedError as e:
+                            self.log.error("Jinja2 templating error: <"+str(e)+"> when loading file: \""+file+"\", run in debug mode to see full except")
+                            if self.log.log_level < 1:
+                                raise
+                        except UnicodeEncodeError as e:
+                            self.log.error("At the moment I'm unable to print special chars: <"+str(e)+">, run in debug mode to see full except")
+                            if self.log.log_level < 1:
+                                raise
+                            sys.exit()
+
 
     def print_to_cli(self):
 
@@ -108,6 +119,12 @@ class Generator:
                         self.log.error("Jinja2 templating error: <"+str(e)+"> when loading file: \""+file+"\", run in debug mode to see full except")
                         if self.log.log_level < 1:
                             raise
+                    except UnicodeEncodeError as e:
+                        self.log.error("At the moment I'm unable to print special chars: <"+str(e)+">, run in debug mode to see full except")
+                        if self.log.log_level < 1:
+                            raise
+
+
                     except:
                         print("Unexpected error:", sys.exc_info()[0])
                         raise

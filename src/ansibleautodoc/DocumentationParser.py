@@ -40,6 +40,8 @@ class Parser:
         elif isinstance(data,dict):
             for k,d in data.items():
                 if k == key:
+                    if isinstance(d,str):
+                        d = [d]
                     r = r + d
                 else:
                     tmp_r = Parser.find_tag(key, d)
