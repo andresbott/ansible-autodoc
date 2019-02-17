@@ -7,10 +7,11 @@ import glob
 sys.path.insert(0, os.path.abspath('src'))
 from ansibleautodoc import __version__
 
+
 try:
     from setuptools import setup, find_packages,Command
 except ImportError:
-    print("ansible-docgen needs setuptools in order to build. Install it using"
+    print("ansible-autodoc needs setuptools in order to build. Install it using"
           " your package manager (usually python-setuptools) or via pip (pip"
           " install setuptools).")
     sys.exit(1)
@@ -50,9 +51,9 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/AndresBott/ansible-autodoc",
-    package_dir={
-        '': 'src'},
+    package_dir={'': 'src'},
     packages=find_packages("src"),
+    include_package_data=True,
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',
@@ -70,15 +71,11 @@ setup(
     ],
     install_requires=[
         'jinja2',
-        'yaml',
+        'pyyaml',
     ],
     setup_requires=['setupext'],
     scripts=[
         'src/bin/ansible-autodoc',
-    ],
-    data_files = [
-        ("", ["LICENSE"]),
-        ("templates",template_files)
     ],
     cmdclass=cmd_classes,
 

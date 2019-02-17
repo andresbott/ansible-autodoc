@@ -10,9 +10,10 @@ Note: this project is currently in Beta, issues, ideas and pull requests are wel
    * tags: the autodoc will search for used tags in the project
 
 # Installation
-## Manual
-1. download / git clone this project 
-2. run `install.py` Note sudo is required ( I use this locally while developing)
+## Manual (for dev)
+1. download / git clone this project
+2. cd ansible-autodoc
+3. `pip install -e ./`
 
 ## Pip
 using pip
@@ -129,11 +130,17 @@ if they have been annotated more than once or if there are tags used in more tha
 * r.fprn(role_name,replace_value="Playbook"): "filter playbook role name" replace the internal playbook role name 
 "_ansible_playbook_" with a different value.
  
-# changelog 
+# changelog
 
-2019/02/17 - Version 0.5.1
+2019/02/17 - Version 0.5.2
+  * FIX: run only in playbook or role project 
+  * add -V | --version to cli
+  * solve pip install issues
+
+2019/02/17 - Version 0.5.1.1
   * add missing feature @example
   * improve default template "readme"
+  * update install dependency on yaml for pip
 
 2019/02/17 - Version 0.5.0
   * added uint tests
