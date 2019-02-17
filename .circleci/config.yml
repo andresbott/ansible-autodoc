@@ -16,7 +16,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: pip install -e .
       - run: python -m pytest test -vv
-      - run: ansibl-eautobot -V
+      - run: ansible-autodoc -V
 
 
 #      - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
