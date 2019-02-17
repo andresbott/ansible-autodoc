@@ -1,0 +1,19 @@
+{## Tags:#}
+{#{% for role,role_value in tags._roles_.items() %}#}
+{#    {% if role == "_ansible_playbook_" %}#}
+{### Playbook tags:#}
+{#        {% for tag,value in role_value.items() %}#}
+{#* {{ tag }}: {{ value.text }}#}
+{#        {% endfor %}#}
+{#    {% endif %}#}
+{#{% endfor %}#}
+{##}
+{### Roles tags:#}
+{#{% for role,role_value in tags._roles_.items() %}{% if role != "_ansible_playbook_" %}#}
+{#### {{ role }}:#}
+{#{% for tag,value in role_value.items() %}#}
+{#* {{ tag }}: {{ value.text }}#}
+{#{% endfor %}#}
+{##}
+{#{% endif %}#}
+{#{% endfor %}#}
