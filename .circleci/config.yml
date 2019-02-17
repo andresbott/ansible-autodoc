@@ -1,0 +1,24 @@
+---
+# based on https://circleci.com/docs/2.0/language-python/
+version: 2
+jobs:
+  build:
+    working_directory: ~/ansible-autodoc
+    docker: # run the steps with Docker
+      # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
+      - image: circleci/python:3.6.4
+
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+      - run: pip3 install -U pytest
+      - run: pip install -r requirements.txt
+      - run: pip install -e .
+      - run: python -m pytest test -vv
+      - run: ansible-autodoc -V
+
+
+#      - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+#          path: test-results
+

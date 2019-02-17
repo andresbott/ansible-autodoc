@@ -1,4 +1,7 @@
 # ansible-autodoc
+
+[![CircleCI](https://circleci.com/gh/AndresBott/ansible-autodoc/tree/master.svg?style=svg)](https://circleci.com/gh/AndresBott/ansible-autodoc/tree/master)
+
 Generate documentation from annotated playbooks and roles using templates.
 
 Note: this project is currently in Beta, issues, ideas and pull requests are welcome.
