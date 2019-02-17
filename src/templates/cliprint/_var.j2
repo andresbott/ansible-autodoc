@@ -1,41 +1,22 @@
 # ============================================================
 # Variables (variable: var)
 # ============================================================
-{% for role,role_value in var._roles_.items() %}
-    {% include '_role_head.j2'  %}
-    {% for k,item in role_value.items() %}
-        {% if item.key | length > 13 %}
-- {{ item.key }}: {{ item.value }} {{ "\t" |e }} {{ item.text }}
-        {% elif tag | length > 5 %}
-- {{ item.key }}: {{ item.value }}{{ "\t\t" |e }} {{ item.text }}
-        {% elif tag | length > 4 %}
-- {{ item.key }}: {{ item.value }}{{ "\t\t\t" |e }} {{ item.text }}
-        {% else %}
-- {{ item.key }}: {{ item.value }}{{ "\t\t\t\t" |e }} {{ item.text }}
-        {% endif %}
-        {% if item.example is defined %}
-  Example: {{ item.example.key }} ::   {{ item.example.text }}
-            {% for example_line in item.example.multi_line %}
-    {{ example_line }}
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
-
+{% for role in r.get_roles(False) %}
+    {% if  r.get_type("var",role) %}
+{{ r.capitalize(r.fprn(role)) }}:
+    {% endif %}
+    {% for item in  r.get_type("var",role) %}
+{{ r.cli_left_space(" * "+ item.key+": "+item.value,35) }} {{ item.desc }}
+    {%  endfor %}
 {% endfor %}
-{% if var._duplicate_.items() | length > 0 %}
-# ============================================================
-Duplicated Variables:
 
-{% for k,var_list in var._duplicate_.items() %}
-- "{{ var_list[0].key }}" in files:
-    {% for item  in var_list  %}
-  * {{ item.file }} : {{ item.line }}
+Duplicate Vars:
+{% for k,v in r.get_duplicates("var") %}
+{{ " * "+k }} in files:
+    {%  for item in v %}
+  {{ item.file }} {% if item.line != "" %}(line: {{ item.line }}) {% endif %}
+
     {% endfor %}
 {% endfor %}
-{% else %}
-# ============================================================
-No Duplicated Variables.
-{% endif %}
-{#{{ var | pprint }}#}
 
-
+{{ var | pprint }}

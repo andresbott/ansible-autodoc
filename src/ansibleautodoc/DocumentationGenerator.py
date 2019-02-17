@@ -15,22 +15,15 @@ class Generator:
 
     template_files = []
     extension = "j2"
-    doc_data = None
+    _parser = None
 
-    def __init__(self,doc_data):
+    def __init__(self,doc_parser):
         self.config = SingleConfig()
         self.log = SingleLog()
-
         self.log.info("Using template dir: "+self.config.get_template_base_dir())
-
-        self.doc_data = doc_data
+        self._parser = doc_parser
         self._scan_template()
 
-        if self.config.use_print_template:
-            self.print_to_cli()
-        else:
-            self.log.info("Using output dir: "+self.config.get_output_dir())
-            self._write_doc()
 
     def _scan_template(self):
         """
@@ -57,7 +50,6 @@ class Generator:
 
     def _write_doc(self):
         files_to_overwite = []
-        doc_data = self.doc_data
 
         for file in self.template_files:
             doc_file=self.config.get_output_dir()+"/"+file[:-len(self.extension)-1]
@@ -85,7 +77,7 @@ class Generator:
                     data = template.read()
                     if data is not None:
                         try:
-                            data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(doc_data)
+                            data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(self._parser.get_data(),r=self._parser)
 
                             if not self.config.dry_run:
                                 with open(doc_file, 'w') as outfile:
@@ -106,6 +98,7 @@ class Generator:
 
     def print_to_cli(self):
 
+
         for file in self.template_files:
             source_file = self.config.get_template_base_dir()+"/"+file
             with open(source_file, 'r') as template:
@@ -113,7 +106,7 @@ class Generator:
 
                 if data is not None:
                     try:
-                        data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(self.doc_data)
+                        data = Environment(loader=FileSystemLoader(self.config.get_template_base_dir()),lstrip_blocks=True, trim_blocks=True).from_string(data).render(self._parser.get_data(),r=self._parser)
                         print(data)
                     except jinja2.exceptions.UndefinedError as e:
                         self.log.error("Jinja2 templating error: <"+str(e)+"> when loading file: \""+file+"\", run in debug mode to see full except")
@@ -130,4 +123,9 @@ class Generator:
                         raise
 
 
-
+    def render(self):
+        if self.config.use_print_template:
+            self.print_to_cli()
+        else:
+            self.log.info("Using output dir: "+self.config.get_output_dir())
+            self._write_doc()

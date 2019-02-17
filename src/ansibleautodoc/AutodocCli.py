@@ -18,7 +18,9 @@ class AnsibleAutodoc:
         self._parse_args(args)
 
         doc_parser = Parser()
-        doc_generator = Generator(doc_parser.doc_data)
+        doc_generator = Generator(doc_parser)
+        doc_generator.render()
+
 
     def _cli_args(self):
         """
@@ -60,7 +62,9 @@ class AnsibleAutodoc:
         :return: None
         """
 
-        self.config.base_dir = os.path.abspath(args.project_dir)
+        print(args.project_dir)
+
+        self.config.set_base_dir(os.path.abspath(args.project_dir))
 
         # search for config file
         if args.conf != "":
@@ -72,7 +76,7 @@ class AnsibleAutodoc:
             else:
                 self.log.warn("No configuration file found: "+conf_file)
         else:
-            conf_file = self.config.base_dir+"/"+self.config.config_file_name
+            conf_file = self.config.get_base_dir()+"/"+self.config.config_file_name
             if os.path.isfile(conf_file):
                 self.config.load_config_file(conf_file)
                 # re apply log level based on config
@@ -119,20 +123,15 @@ class AnsibleAutodoc:
 
         # some debug
         self.log.debug(args)
-        self.log.info("Using base dir: "+self.config.base_dir)
+        self.log.info("Using base dir: "+self.config.get_base_dir())
 
-        # is role
-        if os.path.isdir(self.config.base_dir+"/roles" ):
-            self.config.is_role = False
-            self.log.info("This is detected as: PLAYBOOK ")
-        elif os.path.isdir(self.config.base_dir+"/tasks" ):
-            self.config.is_role = True
+        if self.config.is_role:
             self.log.info("This is detected as: ROLE ")
-            self.config.role_name = os.path.basename(self.config.base_dir)
+        elif not self.config.is_role:
+            self.log.info("This is detected as: PLAYBOOK ")
         else:
             self.log.error([
-                self.config.base_dir+"/roles",
-                self.config.base_dir+"/tasks"
+                self.config.get_base_dir()+"/roles",
+                self.config.get_base_dir()+"/tasks"
             ],"No ansible root project found, checked for: ")
             sys.exit(1)
-

@@ -54,7 +54,7 @@ excluded_roles_dirs: []
     default_output_dir = "generated_doc"
 
     # project base directory
-    base_dir = ""
+    _base_dir = ""
 
     # current directory of this object,
     # used to get the default template directory
@@ -62,8 +62,10 @@ excluded_roles_dirs: []
 
     # path to the directory that contains the templates
     template_dir = ""
-    # default template name
-    default_template = "doc_and_readme"
+    # default playbook template name
+    default_playbook_template = "doc_and_readme"
+    # default role template name
+    default_role_template = "role_readme"
     # template to use
     template = ""
     # flag to ask if files can be overwritten
@@ -84,23 +86,22 @@ excluded_roles_dirs: []
 
     # name of the config file to search for
     config_file_name = "autodoc.conf.yaml"
-    # if config file is not in root of project,
-    # used to make output relative to config file
+    # if config file is not in root of project, this is used to make output relative to config file
     _config_file_dir = ""
 
-    #
+    # directories and files excluded from scan
     excluded_playbook_dirs = [
         "host_vars",
         "group_vars",
         "host_secrets",
         "plugins",
-        "autodoc.config.yaml"
+        "autodoc.conf.yaml"
     ]
 
     excluded_roles_dirs = []
 
     # special Ansible tags to be removed from the tag list
-    excluded_tags= [
+    excluded_tags = [
         "always",
         "untagged",
         "never",
@@ -113,65 +114,116 @@ excluded_roles_dirs: []
     # name = annotation ( without "@" )
     # allow_multiple = True allow to repeat the same annotation, i.e. @todo
     # automatic = True this action will be parsed based on the annotation in name without calling the parse method
+
     annotations = {
         "tag": {
             "name": "tag",
+            "special":True
         },
-        "author": {
-            "name": "author",
-            "automatic": True,
+        "meta": { # @meta: author # <name>
+            "name": "meta",
+            "automatic":True
         },
-        "description": {
-            "name": "description",
-            "automatic": True,
-        },
-        "todo":{
+        "todo": {
             "name": "todo",
             "allow_multiple": True,
             "automatic": True,
         },
-        "action":{
+        "action": {
             "name": "action",
             "allow_multiple": True,
             "automatic": True,
         },
-        "var":{
+        "var": {
             "name": "var",
             "automatic": True,
         },
-        "example":{
+        "example": {
             "name": "example",
             "regex": "(\#\ *\@example\ *\: *.*)"
         },
-        "block_end":{
-            "name": "block_end",
-            "regex": "(\#\ *\@end\ *)"
-        }
     }
-
-
-
-
 
     def __init__(self):
         self.script_base_dir = os.path.dirname(os.path.realpath(__file__))
 
+    def set_base_dir(self,dir):
+        self._base_dir = dir
+        self._set_is_role()
+
+    def get_base_dir(self):
+        return self._base_dir
+
+    def get_annotations_definition(self, automatic=True,special=True):
+        annotations = {}
+
+        if automatic:
+            for k, item in self.annotations.items():
+                if "automatic" in item.keys() and item["automatic"]:
+                    annotations[k]=item
+        if special:
+            for k, item in self.annotations.items():
+                if "special" in item.keys() and item["special"]:
+                    annotations[k]=item
+
+        return annotations
+
+    def get_annotations_names(self,automatic=True,special=False):
+
+        annotations = []
+
+        if automatic:
+            for k, item in self.annotations.items():
+                if "automatic" in item.keys() and item["automatic"]:
+                    annotations.append(k)
+
+        if special:
+            for k, item in self.annotations.items():
+                if "special" in item.keys() and item["special"]:
+                    annotations.append(k)
+
+        return annotations
+
+    def _set_is_role(self):
+        # is role
+        if os.path.isdir(self._base_dir+"/roles"):
+            self.is_role = False
+        elif os.path.isdir(self._base_dir+"/tasks"):
+            self.is_role = True
+            self.role_name = os.path.basename(self._base_dir)
+        else:
+            self.is_role = None
+
     def get_output_dir(self):
+        """
+        get the relative path to cwd of the output directory for the documentation
+        :return: str path
+        """
         if self.use_print_template:
             return ""
         if self.output_dir == "":
-            return os.path.realpath(self.base_dir+"/"+self.default_output_dir)
+            if self.is_role and (self.template == "" or self.template == "role_readme"):
+                return os.path.realpath(self._base_dir)
+            else:
+                return os.path.realpath(self._base_dir+"/"+self.default_output_dir)
         elif os.path.isabs(self.output_dir):
             return os.path.realpath(self.output_dir)
         elif not os.path.isabs(self.output_dir):
             return os.path.realpath(self._config_file_dir+"/"+self.output_dir)
 
     def get_template_base_dir(self):
+        """
+        get the base dir for the template to use
+        :return: str abs path
+        """
         if self.use_print_template:
             return os.path.realpath(self.script_base_dir+"/../templates/cliprint")
 
         if self.template == "":
-            template = self.default_template
+            if self.is_role:
+                template = self.default_role_template
+            else:
+                template = self.default_playbook_template
         else:
             template = self.template
 
@@ -195,6 +247,10 @@ excluded_roles_dirs: []
             "excluded_roles_dirs",
 
         ]
+        overwrite_map = {
+            "base_dir":"set_base_dir",
+        }
+
         with open(file, 'r') as yaml_file:
 
             try:
