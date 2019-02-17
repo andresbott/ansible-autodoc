@@ -35,7 +35,7 @@ def test_get_details():
 
     item3 = items["all"]["key3 multi-word"]
     assert item3["key"] == "key3 multi-word"
-    assert item3["desc"] == "value3 desc3"
+    assert item3["desc"] == "desc3"
 
     item4 = items["all"]["key4"]
     assert item4["value"] == ""

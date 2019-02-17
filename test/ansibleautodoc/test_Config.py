@@ -17,14 +17,7 @@ def test_default_template_dir():
     conf = Config()
     basedir = conf.get_template_base_dir()
     basedir = basedir[len(project_dir):]
-    assert basedir == "/src/templates/doc_and_readme"
-
-
-def test_default_output_dir():
-    conf = Config()
-    basedir = conf.get_output_dir()
-    assert basedir == "/generated_doc"
-
+    assert basedir == "/src/templates/readme"
 
 def test_get_annotation_definition():
     conf = Config()

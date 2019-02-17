@@ -50,8 +50,6 @@ excluded_roles_dirs: []
 """
     # path to the documentation output dir
     output_dir = ""
-    # name of the default folder for documentation out
-    default_output_dir = "generated_doc"
 
     # project base directory
     _base_dir = ""
@@ -62,10 +60,8 @@ excluded_roles_dirs: []
 
     # path to the directory that contains the templates
     template_dir = ""
-    # default playbook template name
-    default_playbook_template = "doc_and_readme"
-    # default role template name
-    default_role_template = "role_readme"
+    # default template name
+    default_template = "readme"
     # template to use
     template = ""
     # flag to ask if files can be overwritten
@@ -82,7 +78,7 @@ excluded_roles_dirs: []
     # internal flag
     is_role = None
     # internal when is_rote is True
-    role_name = ""
+    project_name = ""
 
     # name of the config file to search for
     config_file_name = "autodoc.conf.yaml"
@@ -186,11 +182,11 @@ excluded_roles_dirs: []
 
     def _set_is_role(self):
         # is role
+        self.project_name = os.path.basename(self._base_dir)
         if os.path.isdir(self._base_dir+"/roles"):
             self.is_role = False
         elif os.path.isdir(self._base_dir+"/tasks"):
             self.is_role = True
-            self.role_name = os.path.basename(self._base_dir)
         else:
             self.is_role = None
 
@@ -202,10 +198,7 @@ excluded_roles_dirs: []
         if self.use_print_template:
             return ""
         if self.output_dir == "":
-            if self.is_role and (self.template == "" or self.template == "role_readme"):
-                return os.path.realpath(self._base_dir)
-            else:
-                return os.path.realpath(self._base_dir+"/"+self.default_output_dir)
+            return os.path.realpath(self._base_dir)
         elif os.path.isabs(self.output_dir):
             return os.path.realpath(self.output_dir)
         elif not os.path.isabs(self.output_dir):
@@ -220,10 +213,7 @@ excluded_roles_dirs: []
             return os.path.realpath(self.script_base_dir+"/../templates/cliprint")
 
         if self.template == "":
-            if self.is_role:
-                template = self.default_role_template
-            else:
-                template = self.default_playbook_template
+            template = self.default_template
         else:
             template = self.template
 

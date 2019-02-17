@@ -1,0 +1,12 @@
+{% for item in  r.get_type("var") %}
+
+* `{{ item.key+": "+item.value }}`:
+{{ item.desc }}
+
+{%  if item.example != "" %}
+example: {{ item.example.key }}
+```yaml
+{{ item.example.desc }}
+```
+{% endif %}
+{%  endfor %}

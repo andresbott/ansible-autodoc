@@ -1,8 +1,7 @@
 # ansible-autodoc
-Generate documentation from annotated playbooks and roles using templates
+Generate documentation from annotated playbooks and roles using templates.
 
-Please note this is still a work in progress, while the code might work in it's current state 
-I don't recommend yet to use it, as I will probably change things.
+Note: this project is currently in Beta, issues, ideas and pull requests are welcome.
 
 # Features
 * allow to document playbook projects and roles
@@ -13,17 +12,34 @@ I don't recommend yet to use it, as I will probably change things.
 # Installation
 ## Manual
 1. download / git clone this project 
-2. run `install.py` Note sudo is required
+2. run `install.py` Note sudo is required ( I use this locally while developing)
 
 ## Pip
-using pip (not yet)
+using pip
 ```
 pip install ansible-autodoc
 ``` 
 
-# Use
+## Use
+```$xslt
+ansible-autodoc -h # print help
+ansible-autodoc -p all path/to/role # print in cli all the recolected data 
+ansible-autodoc [path/to/project] # will generate README file based on annotations  
+``` 
+### more flexibility 
+you can create a configuration file "autodoc.config.yaml" in the root of your project in order to modify
+several behaviours, see the sample config file for more details:
 
-## Annotations
+```$xslt
+# role or project with playbooks
+$ cd <project> 
+
+# create sample configuration (optional) 
+# you can pass the options as parameters too
+$ ansible-autodoc --sample-doc > autodoc.config.yaml
+```
+
+# Annotations
 
 Use the following annotations in your playbooks and roles
 
@@ -31,7 +47,7 @@ Use the following annotations in your playbooks and roles
 check below list of useful metadata
   * author: (self explanatory)
   * description: playbook / role description
-  * role_name: to define a different role name instead of the folder name
+  * name: to define a different role/project name instead of the folder name
   * license: (self explanatory)
   * email: (self explanatory)
 * todo: `# @todo: section #Taskt that need to be done` to annotate a todo
@@ -47,27 +63,10 @@ for annotations, but also for used tags in the project and add that to the gener
 # @end
 ``` 
 
-### Not implemented:
+## Not implemented:
 this is still not implemented, just ideas 
 
 `Nothing here`
-
-## Generate Documentation
-
-```$xslt
-# role or project with playbooks
-$ cd <project> 
-
-# create sample configuration (optional) 
-# you can pass the options as parameters too
-$ ansible-autodoc --sample-doc > autodoc.config.yaml
-
-# crate documentation
-$ ansible-autodoc 
-
-# more options
-$ ansible-autodoc -h
-```
 
 # Templates
 the template engine uses jinja2 for document parsing, the directory structure of the template
@@ -121,6 +120,7 @@ you can use it like:
 * r.get_duplicates(name): return a dict of annotations that are duplicated, i.e useful for tags to identify 
 if they have been annotated more than once or if there are tags used in more than one role.
 * r.allow_multiple(name): check if a annotation allows multiple values, like @todo or @action.
+* r.include(filename): include a tex file, path relative to the project root 
 
 * r.cli_left_space("string",spaces) : left justify with spaces a string, spaces is optional, see python ljust()
 * r.cli_print_section() : return the passed parameter when using cli print "-p", default is "all"
@@ -130,6 +130,11 @@ if they have been annotated more than once or if there are tags used in more tha
 "_ansible_playbook_" with a different value.
  
 # changelog 
+
+2019/02/17 - Version 0.5.1
+  * add missing feature @example
+  * improve default template "readme"
+
 2019/02/17 - Version 0.5.0
   * added uint tests
   * refactored annotation discovery into Annotation object
@@ -137,6 +142,7 @@ if they have been annotated more than once or if there are tags used in more tha
   * made annotation syntax more uniform 
   * moved some essential logic from AutodocCli to Config
   * IMPROVEMENT: got rid of annotations author and description and use meta: author | description instead
+  * Missing feature from 0.4: @example
 
 2019/01/22 - Version 0.4.2
   * FIX: yaml load unicode files
@@ -162,7 +168,8 @@ if they have been annotated more than once or if there are tags used in more tha
 ### improvements
 * improve the default templates : ongoing task
 * improve the documentation : ongoing task
-* add @autodoc tag, for enabling and disabling parts of the template & document
+* add @autodoc tag, to use as flags for specific templates, i.e # @autodoc tags:hidden # 
+to hide the render of tags section
 * add annotation personalization by extending annotation definition in configuration file
 * document annotation personalization
 

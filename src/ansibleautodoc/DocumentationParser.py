@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-import yaml
-import re
-import pprint
+import os
 
 from ansibleautodoc.Utils import SingleLog
 from ansibleautodoc.Config import SingleConfig
@@ -56,12 +54,26 @@ class Parser:
             roles.remove(PLAYBOOK_ROLE_NAME)
         return roles
 
+    def include(self,filename):
+        base =self.config.get_base_dir()
+        base += "/"+filename
+        base = os.path.abspath(base)
+        if os.path.isfile(base):
+            text_file = open(base, "r")
+            lines = text_file.readlines()
+            out = ""
+            for line in lines:
+                out += line
+            return out
+        else:
+            # return "[include] file: "+base+" not found"
+            return ""
+
     def is_role(self):
         return self.config.is_role
 
-    def get_role_name(self):
-        if self.config.is_role:
-            return self.config.role_name
+    def get_name(self):
+        return self.config.project_name
 
     def cli_print_section(self):
         return self.config.use_print_template

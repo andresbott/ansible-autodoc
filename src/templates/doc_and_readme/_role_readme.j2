@@ -1,35 +1,27 @@
-{%  if r.is_role() %}
 # Ansible role: {% if r.get_item("meta","role_name") %}{{ r.capitalize(r.get_item("meta","role_name").value) }}
-{% else %}{{ r.capitalize( r.get_role_name()) }}{% endif %}
+{% else %}{{ r.capitalize( r.get_name()) }}{% endif %}
 
 
 {% if r.get_item("meta","description") %}
-{{ r.capitalize(r.get_item("meta","description").value) }}
+    {{ r.capitalize(r.get_item("meta","description").value) }}
 {% endif %}
 
 ## Role Variables
-{% for item in  r.get_type("var") %}
-
-    {{ item.key+": "+item.value }}
-
-{{ item.desc }}
-
-{{ item | pprint }}
-{%  endfor %}
+{#      Vars      #}
+{% include '_vars.j2'  %}
+{#      TO DO:      #}
+{% include '_todo.j2'  %}
 
 {#      LICENSE      #}
 {% if r.get_item("meta","license") %}
-# License
+## License
 {{ r.capitalize(r.get_item("meta","license").value) }}
 {{ r.capitalize(r.get_item("meta","license").desc) }}
 {% endif %}
+
 {#      Author information      #}
 {% if r.get_item("meta","author") %}
-# Author Information
+## Author Information
 This role was created by: {{ r.capitalize(r.get_item("meta","author").value) }}
-{% if r.get_item("meta","email")  %}{{ r.capitalize(r.get_item("meta","email").desc) }}{% endif %}
-{% endif %}
-
-{% else %}
-This template vas invoked on a non role project
+{% if r.get_item("meta","email")  %}{{ r.capitalize(r.get_item("meta","email").value) }}{% endif %}
 {% endif %}

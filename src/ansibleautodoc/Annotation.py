@@ -17,6 +17,7 @@ class AnnotationItem:
     role = ""  # associated role
     file = ""  # file of the annotation
     line = ""  # line of the annotation
+    example = ""  # add an example item iof defined: @example
 
     # next time improve this by looping over public available attributes
     def __str__(self):
@@ -27,6 +28,7 @@ class AnnotationItem:
         s += "role: "+self.role+", "
         s += "file: "+self.file+", "
         s += "line: "+self.line+" "
+        s += "line: "+self.example+" "
         s += "}"
         return s
 
@@ -38,6 +40,7 @@ class AnnotationItem:
             "role": self.role,
             "file": self.file,
             "line": self.line,
+            "example": self.example,
         }
 
 
@@ -113,7 +116,7 @@ class Annotation:
                         break
 
                     if re.match(regex, line):
-                        item = self._get_annotation_data(line)
+                        item = self._get_annotation_data(line,self._annotation_definition["name"])
                         # print(item.get_obj())
                         self._populate_item(item)
 
@@ -156,7 +159,7 @@ class Annotation:
             if item.key not in self._role_items[item.role].keys():
                 self._role_items[item.role][item.key] = item.get_obj()
 
-    def _get_annotation_data(self,line):
+    def _get_annotation_data(self,line,name):
         """
         make some string conversion on a line in order to get the relevant data
         :param line:
@@ -172,7 +175,8 @@ class Annotation:
             item.line = self._current_line
 
         # step1 remove the annotation
-        reg1 = "(\#\ *\@"+self._annotation_definition["name"]+"\ *)"
+        # reg1 = "(\#\ *\@"++"\ *)"
+        reg1 = "(\#\ *\@"+name+"\ *)"
         line1 = re.sub(reg1, '', line).strip()
 
         # print("line1: '"+line1+"'")
@@ -196,9 +200,9 @@ class Annotation:
         current_file_position = self._file_handler.tell()
 
         while True:
-            next_line = self._file_handler.readline().strip()
+            next_line = self._file_handler.readline()
 
-            if not next_line:
+            if not next_line.strip():
                 self._file_handler.seek(current_file_position)
                 break
 
@@ -218,7 +222,10 @@ class Annotation:
                 self._file_handler.seek(current_file_position)
                 break
 
-            multiline += " "+test_line.strip()
+            if name == "example":
+                multiline += next_line.replace("#", "", 1)
+            else:
+                multiline += " "+test_line.strip()
 
         # step5 take the description, there is something after #
         if len(parts) > 1:
@@ -226,9 +233,35 @@ class Annotation:
             desc += " "+multiline.strip()
             item.desc = desc.strip()
         elif multiline != "":
-            val = item.value.strip()
-            val += " "+multiline.strip()
-            item.desc = val.strip()
+            item.desc = multiline.strip()
+
+        # step5, check for @example
+        example = ""
+
+        if name != "example":
+
+            current_file_position = self._file_handler.tell()
+            example_regex = "(\#\ *\@example\ +.*)"
+
+            while True:
+                next_line = self._file_handler.readline()
+                if not next_line:
+                    self._file_handler.seek(current_file_position)
+                    break
+
+                # exit if next annotation is not @example
+                if re.match(stars_with_annotation, next_line):
+                    if "@example" not in next_line:
+                        self._file_handler.seek(current_file_position)
+                        break
+
+                if re.match(example_regex, next_line):
+                    example = self._get_annotation_data(next_line,"example")
+                    # pprint.pprint(example.get_obj())
+                    self._file_handler.seek(current_file_position)
+                    break
+        if example != "":
+            item.example = example.get_obj()
 
         return item
 
