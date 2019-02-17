@@ -16,7 +16,7 @@ jobs:
       - run: pip3 install -U pytest
       - run: python -V
       - run: python3 -V
-      - run: pytest3 test -vv
+      - run: pytest-3 test -vv
 
 
 
