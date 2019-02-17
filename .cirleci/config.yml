@@ -1,0 +1,43 @@
+---
+# based on https://circleci.com/docs/2.0/language-python/
+version: 2
+jobs:
+#  build:
+#    working_directory: ~/
+#    docker: # run the steps with Docker
+#      # CircleCI Python images available at: https://hub.docker.com/r/circleci/python/
+#      - image: circleci/python:3.6.4
+#
+#    steps:
+#      - checkout # check out source code to working directory
+#      - run: sudo chown -R circleci:circleci /usr/local/bin
+#      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
+#      - restore_cache:
+#      # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+#          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+#      - run:
+#          command: |
+#            sudo pip install pipenv
+#            pipenv install
+#      - save_cache: # cache Python dependencies using checksum of Pipfile as the cache-key
+#          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+#          paths:
+#            - ".venv"
+#            - "/usr/local/bin"
+#            - "/usr/local/lib/python3.6/site-packages"
+#      - run:
+#          command: |
+#            pipenv run python manage.py test
+#      - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+#          path: test-results
+
+  test:
+    docker:
+      - image: circleci/python:3.6.4
+    steps:
+      - checkout
+      - run:
+          name: Runnning tests
+          command: |
+            . venv/bin/activate
+            py.test -vv test
