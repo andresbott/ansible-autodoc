@@ -1,16 +1,21 @@
-{#{{ tag | pprint }}#}
-{% if is_print is defined and (is_print == "all"  or is_print == "info" )%}
+### CLI tempate ###
+{{ r.test() | pprint }}
+{% if r.cli_print_section() == "all"  or r.cli_print_section() == "info" %}
     {% include '_description.j2'  %}
 {% endif %}
-{% if is_print is defined and (is_print == "all"  or is_print == "action" or is_print == "actions" )%}
+
+{% if r.cli_print_section() == "all"  or r.cli_print_section() == "actions" %}
     {% include '_action.j2'  %}
 {% endif %}
-{% if is_print is defined and (is_print == "all"  or is_print == "tags" )%}
+
+{% if r.cli_print_section() == "all"  or r.cli_print_section() == "tag" %}
     {% include '_tags.j2'  %}
 {% endif %}
-{% if is_print is defined and (is_print == "all"  or is_print == "todo" )%}
+
+{% if r.cli_print_section() == "all"  or r.cli_print_section() == "todo" %}
     {% include '_todo.j2'  %}
 {% endif %}
-{% if is_print is defined and (is_print == "all"  or is_print == "var" )%}
+
+{% if r.cli_print_section() == "all"  or r.cli_print_section() == "var"  %}
     {% include '_var.j2'  %}
 {% endif %}

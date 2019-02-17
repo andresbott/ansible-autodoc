@@ -1,44 +1,19 @@
 # ============================================================
-# Tags (variable: tags)
+# Tags (variable: tag)
 # ============================================================
-
-{% for role,role_value in tags._roles_.items() %}
-    {% include '_role_head.j2'  %}
-    {% for tag,value in role_value.items() %}
-        {% if tag |length > 13 %}
-- {{ tag }}{{ "\t" |e }} {{ value.text }}
-        {% elif tag |length > 5 %}
-- {{ tag }}{{ "\t\t" |e }} {{ value.text }}
-        {% elif tag |length > 4 %}
-- {{ tag }}{{ "\t\t\t" |e }} {{ value.text }}
-        {% else %}
-- {{ tag }}{{ "\t\t\t\t" |e }} {{ value.text }}
-        {% endif %}
-    {% endfor %}
-
+{% for role in r.get_roles(False) %}
+{{ r.capitalize(r.fprn(role)) }}:
+    {% for item in  r.get_type("var",role) %}
+{{ r.cli_left_space(" * "+r.capitalize(item.key),25) }} {{ item.desc }}
+    {%  endfor %}
 {% endfor %}
-{% if tags._annotation_duplicate_.items() | length > 0 %}
-# ============================================================
-Duplicated Tags:
-{% for k,tag_list in tags._annotation_duplicate_.items() %}
 
-- {{ tag_list[0].key }} in files:
-        {% for tag  in tag_list  %}
-  * {{ tag.file }} : {{ tag.line }}
-        {% endfor %}
+{#{{ tag | pprint }}#}
+Duplicate Tags:
+{% for k,v in r.get_duplicates("tag") %}
+{{ " * "+k }} in files:
+    {%  for item in v %}
+    {{ item.file }} {% if item.line != "" %}(line: {{ item.line }}) {% endif %}
+
     {% endfor %}
-{% else %}
->>>     No Duplicated Tags.             <<<
-
-{% endif %}
-{% if tags._yaml_duplicate_.items() | length > 0 and not is_role%}
-# ============================================================
-Tags used in more than one role:
-    {% for k,tag_list in tags._yaml_duplicate_.items() %}
-
-- Tag: "{{ tag_list[0].key }}" is used in roles:
-        {% for tag  in tag_list  %}
-  * {{ tag.role }}
-        {% endfor %}
-    {% endfor %}
-{% endif %}
+{% endfor %}

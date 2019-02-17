@@ -1,0 +1,37 @@
+---
+# ====================================
+# @meta author: Role 1
+# @meta description: Description of role1 #
+# second line
+#
+# ====================================
+#============================================================================================================
+# Role1
+#============================================================================================================
+# @action role1 action # this is the description of the actions
+# performed by role1 action
+# @tag duplicated_tag  # description of duplicated_tag
+# @tag role_1 # description of role_1
+- block:
+
+  - name: Install some task
+    apt:
+      name:
+        - aptitude
+      state: present
+      update_cache: yes
+      install_recommends: no
+    notify: start fail2ban
+    when: extra_install_fail2ban
+
+  tags:
+    - role_1
+    - untagged
+    - duplicated_tag
+    - playbook_duplicated
+
+
+# @todo bug: some bug # we will need to solve that boug soon
+# @todo bug: other bug # we will need to solve that boug soon
+# @todo improvement: make this awsome # this is a improvement
+# @todo # quick todo

@@ -3,51 +3,46 @@ import os
 import sys
 import glob
 
+from ansibleautodoc.Contstants import *
 from ansibleautodoc.Config import SingleConfig
 from ansibleautodoc.Utils import SingleLog
 
 
 class Registry:
 
-    _doc = {
-        "_ansible_playbook_" : []
-    }
+    _doc = {}
     log = None
     config = None
 
     def __init__(self):
         self.config = SingleConfig()
         self.log = SingleLog()
+        self._scan_for_yamls_in_project()
 
-        self._find_yaml_files()
+    def get_files(self):
+        """
+        :return objcect structured as:
+            {
+                "role_name":["/abs_path/to_file","/abs_path/to_file2"],
+                "role2_name:["abs/path/2"]
+            }
+        :param
+        :return:
+        """
+        return self._doc
 
-    def get_file(self,name):
-        if name in self._doc.keys():
-            return self._doc[name]
-        else:
-            return None
-
-    def get_files(self,role=None):
-        # TODO: return files specific to a role
-        r = []
-        if not role:
-            return self._doc
-        else:
-            for k,v in self._doc.items():
-                print(k)
-                print(v)
-
-    def _find_yaml_files(self):
+    def _scan_for_yamls_in_project(self):
         """
         Search for Yaml files depending if we are scanning a playbook or a role
         :return:
         """
-        base_dir = self.config.base_dir
+        base_dir = self.config.get_base_dir()
         base_dir_roles = base_dir+"/roles"
 
         if not self.config.is_role:
+
             self.log.debug("Scan for playbook files: "+base_dir)
-            self._scan_for_yamls(base_dir,is_role=False)
+            self._scan_for_yamls(base_dir, is_role=False)
 
             self.log.debug("Scan for roles in the project: "+base_dir_roles)
             for entry in os.scandir(base_dir_roles):
@@ -64,12 +59,12 @@ class Registry:
 
     def _scan_for_yamls(self,base,is_role=True):
         """
-        Search for the yaml files
+        Search for the yaml files in each project/role root and append to the corresponding object
         :param base: directory in witch we are searching
         :param is_role: is this a role directory
         :return: None
         """
-        extensions = ["yaml","yml"]
+        extensions = YAML_EXTENSIONS
         base_dir = base
 
         for extension in extensions:
@@ -81,7 +76,7 @@ class Registry:
                 else:
                     if not is_role:
                         self.log.trace("Adding to playbook: "+filename)
-                        self.add_playbook_file(filename)
+                        self.add_role_file(filename, PLAYBOOK_ROLE_NAME)
                     else:
                         role_dir = os.path.basename(base_dir)
                         self.log.trace("Adding to role:"+role_dir+" => "+filename)
@@ -95,13 +90,12 @@ class Registry:
         :param is_role:
         :return:
         """
-
         if is_role:
             base_dir = role_base_dir
-            excluded = self.config.excluded_roles_dirs
+            excluded = self.config.excluded_roles_dirs.copy()
         else:
-            base_dir = self.config.base_dir
-            excluded = self.config.excluded_playbook_dirs
+            base_dir = self.config.get_base_dir()
+            excluded = self.config.excluded_playbook_dirs.copy()
             excluded.append("roles")
 
         is_filtered = False
@@ -117,6 +111,3 @@ class Registry:
 
         self._doc[role_name].append(path)
 
-    def add_playbook_file(self,path):
-        self.log.trace("add_playbook_file("+path+")")
-        self._doc["_ansible_playbook_"].append(path)

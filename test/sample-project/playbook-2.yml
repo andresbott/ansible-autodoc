@@ -1,0 +1,12 @@
+#============================================================================================================
+# A playbook
+#============================================================================================================
+# @tag  playbook_tag # playbook_tag description
+# @tag  playbook_duplicated # this describes a tag defined in a playbook and in a role
+- hosts: all
+  tasks:
+  - include_role:
+    name: myrole
+    tags:
+      - playbook_tag
+      - playbook_duplicated

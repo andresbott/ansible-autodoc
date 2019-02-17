@@ -1,0 +1,5 @@
+{%  if r.is_role() %}
+{% include '_role_readme.j2'  %}
+{% else %}
+{% include '_play_readme.j2'  %}
+{% endif %}

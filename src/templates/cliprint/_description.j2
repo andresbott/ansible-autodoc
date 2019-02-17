@@ -1,18 +1,10 @@
 # ============================================================
-# Project Description (variables: author,description)
+# Project Description
 # ============================================================
-{% for role,role_value in author._roles_.items() %}
-        {% if role_value.author is defined or(  description._roles_[role] is defined
-        and  description._roles_[role].description is defined ) %}
-        {% include '_role_head.j2'  %}
-{% endif %}
-    {% if role_value.author is defined  and role_value.author.text is defined %}
-Author:  {{ "\t" |e }}{{ role_value.author.text }}
-    {% endif %}
-    {% if description._roles_[role] is defined
-    and description._roles_[role].description is defined
-    and description._roles_[role].description.text is defined %}
-Descriptions:  {{ "\t" |e }}{{ description._roles_[role].description.text }}
-    {% endif %}
-
+{% for role in r.get_roles(False) %}
+{{ r.capitalize(r.fprn(role)) }}:
+    {% for item in  r.get_type("meta",role) %}
+  {{ r.cli_left_space(r.capitalize(item.key),25) }} {{ item.value }}
+    {%  endfor %}
 {% endfor %}
+

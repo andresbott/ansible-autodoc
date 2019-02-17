@@ -4,18 +4,3 @@
 
 ### Duplicated tags:
 
-The following Tags are used in more than one role/playbook:
-{% for tag,value in tags._yaml_duplicate_.items() %}
-- "{{ tag }}" in roles:{% for item in value %}
-    - {{ item.role }} {{ item.line }}{% endfor %}
-{% endfor %}
-
-### Duplicated annotation:
-
-( @tag : <name> # <description> )
-
-The following tags are annotated more than once on different locations:
-{% for tag,value in tags._annotation_duplicate_.items() %}
-- {{ tag }}{% for item in value %}
-  - {{ item.file }}:{{ item.line }}{% endfor %}
-{% endfor %}

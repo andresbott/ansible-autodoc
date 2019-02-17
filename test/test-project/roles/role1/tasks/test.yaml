@@ -1,0 +1,28 @@
+---
+# this file contains some specifically crafted annotations used in the automated tests, don't change if not
+# changing the code + tests
+
+# ====================================
+# TAG
+# ====================================
+# @tag role_1_tag # role1 desc
+
+
+- block:
+
+  - name: Install some task
+    apt:
+      name:
+        - aptitude
+      state: present
+      update_cache: yes
+      install_recommends: no
+    notify: start fail2ban
+    when: extra_install_fail2ban
+
+  tags:
+    - role_1_tag
+    - untagged # excluded tag
+    - non-annotated
+
+

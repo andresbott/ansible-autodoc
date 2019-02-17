@@ -1,0 +1,13 @@
+---
+#============================================================================================================
+# Fai2ban
+#============================================================================================================
+# @var role2_sample_var: True # role2 var1 desc
+# @var role2_sample_var2: True # first line
+# role2 var2 desc
+# @var duplicated_var: "something" # this is a duplicated var,
+# present in more than one role
+
+role2_sample_var: true
+
+# for now the role does not extend the default configuration

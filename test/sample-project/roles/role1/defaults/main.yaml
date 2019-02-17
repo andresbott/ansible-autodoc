@@ -1,0 +1,31 @@
+---
+#============================================================================================================
+# Role1
+#============================================================================================================
+# @var duplicated_var: "something" # this is the first sample var
+# @example duplicated var usage: # This is a text sentence providing more information about using this variable
+duplicated_var: "some"
+
+# here comes some
+# multi line block
+
+config1: yes
+
+# @var var2: "something" # this is var2
+var:
+  - some content
+  - other content
+
+# @example this demosntrates a better usage
+#var2:
+#  - some content # this is some description to the value
+#  - other content
+# @end
+# not part of the example anymore
+
+var2: yes
+
+# @var var3 # this is the first sample var3
+var3: no
+
+
