@@ -13,8 +13,10 @@ jobs:
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - run: find
-      - run: pip install -U pytest
-      - run: pytest test
+      - run: pip3 install -U pytest
+      - run: python -V
+      - run: python3 -V
+      - run: pytest3 test -vv
 
 
 
