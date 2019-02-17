@@ -8,6 +8,7 @@ from ansibleautodoc.Utils import SingleLog
 from ansibleautodoc.Config import SingleConfig
 from ansibleautodoc.DocumentationParser import Parser
 from ansibleautodoc.DocumentationGenerator import Generator
+from ansibleautodoc import __version__
 
 class AnsibleAutodoc:
 
@@ -47,6 +48,7 @@ class AnsibleAutodoc:
         parser.add_argument('-p', nargs='?', default="_unset_", help='use print template instead of writing to files, '
                                                                      'sections: all, info, tags, todo, var')
 
+        parser.add_argument('-V',"--version", action='store_true', help='Get versions')
 
         debug_level = parser.add_mutually_exclusive_group()
         debug_level.add_argument('-v', action='store_true', help='Set debug level to info')
@@ -61,9 +63,6 @@ class AnsibleAutodoc:
         :param args:
         :return: None
         """
-
-        print(args.project_dir)
-
         self.config.set_base_dir(os.path.abspath(args.project_dir))
 
         # search for config file
@@ -85,6 +84,11 @@ class AnsibleAutodoc:
         # sample configuration
         if args.sample_config:
             print(self.config.sample_config)
+            sys.exit()
+
+        # version
+        if args.version:
+            print(__version__)
             sys.exit()
 
         # Debug levels
@@ -127,7 +131,7 @@ class AnsibleAutodoc:
 
         if self.config.is_role:
             self.log.info("This is detected as: ROLE ")
-        elif not self.config.is_role:
+        elif self.config.is_role is not None and not self.config.is_role:
             self.log.info("This is detected as: PLAYBOOK ")
         else:
             self.log.error([

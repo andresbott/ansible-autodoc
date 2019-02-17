@@ -210,7 +210,7 @@ excluded_roles_dirs: []
         :return: str abs path
         """
         if self.use_print_template:
-            return os.path.realpath(self.script_base_dir+"/../templates/cliprint")
+            return os.path.realpath(self.script_base_dir+"/templates/cliprint")
 
         if self.template == "":
             template = self.default_template
@@ -218,7 +218,7 @@ excluded_roles_dirs: []
             template = self.template
 
         if self.template_dir == "":
-            return os.path.realpath(self.script_base_dir+"/../templates/"+template)
+            return os.path.realpath(self.script_base_dir+"/templates/"+template)
         elif os.path.isabs(self.template_dir):
             return os.path.realpath(self.template_dir+"/"+template)
         elif not os.path.isabs(self.template_dir):

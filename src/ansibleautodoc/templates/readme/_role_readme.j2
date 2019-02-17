@@ -1,0 +1,27 @@
+# Ansible role: {% if r.get_item("meta","role_name") %}{{ r.capitalize(r.get_item("meta","role_name").value) }}
+{% else %}{{ r.capitalize( r.get_name()) }}{% endif %}
+
+
+{% if r.get_item("meta","description") %}
+    {{ r.capitalize(r.get_item("meta","description").value) }}
+{% endif %}
+
+## Role Variables
+{#      Vars      #}
+{% include '_vars.j2'  %}
+{#      TO DO:      #}
+{% include '_todo.j2'  %}
+
+{#      LICENSE      #}
+{% if r.get_item("meta","license") %}
+## License
+{{ r.capitalize(r.get_item("meta","license").value) }}
+{{ r.capitalize(r.get_item("meta","license").desc) }}
+{% endif %}
+
+{#      Author information      #}
+{% if r.get_item("meta","author") %}
+## Author Information
+This role was created by: {{ r.capitalize(r.get_item("meta","author").value) }}
+{% if r.get_item("meta","email")  %}{{ r.capitalize(r.get_item("meta","email").value) }}{% endif %}
+{% endif %}

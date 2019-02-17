@@ -1,0 +1,27 @@
+{% if r.get_item("meta","name","play") %}
+# {{ r.capitalize( r.get_item("meta","name","play").value ) }}
+{% else %}
+# {{ r.capitalize( r.get_name() ) }}
+{% endif %}
+
+{% if r.get_item("meta","description","play") %}
+{{ r.capitalize(r.get_item("meta","description","play").value) }}
+{% endif %}
+{{ r.include("_after_description.md") }}
+
+{#      TO DO:      #}
+{% include '_todo.j2'  %}
+
+{#      LICENSE      #}
+{% if r.get_item("meta","license") %}
+## License
+{{ r.capitalize(r.get_item("meta","license","play").value) }}
+{{ r.capitalize(r.get_item("meta","license","play").desc) }}
+{% endif %}
+
+{#      Author information      #}
+{% if r.get_item("meta","author","play") %}
+## Author Information
+This role was created by: {{ r.capitalize(r.get_item("meta","author","play").value) }}
+    {% if r.get_item("meta","email","play")  %}{{ r.capitalize(r.get_item("meta","email","play").value) }}{% endif %}
+{% endif %}
