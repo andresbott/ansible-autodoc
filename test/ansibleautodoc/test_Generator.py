@@ -18,7 +18,8 @@ class TestGenerator(object):
         config.template = "test-template"
         doc_generator = Generator({})
         print(doc_generator.template_files)
-        assert doc_generator.template_files == ['Readme.md.j2', 'sub_dir/_sample_include.md.j2', 'sub_dir/subdir.md.j2']
+
+        assert doc_generator.template_files.sort() == ['Readme.md.j2', 'sub_dir/_sample_include.md.j2', 'sub_dir/subdir.md.j2'].sort()
 
     def test_render(self,tmpdir):
         config = SingleConfig()
