@@ -16,8 +16,8 @@ def test_is_role():
 def test_default_template_dir():
     conf = Config()
     basedir = conf.get_template_base_dir()
-    basedir = basedir[len(project_dir):]
-    assert basedir == "/src/templates/readme"
+    sample = "ansibleautodoc/templates/readme"
+    assert basedir[-len(sample):] == sample
 
 def test_get_annotation_definition():
     conf = Config()
