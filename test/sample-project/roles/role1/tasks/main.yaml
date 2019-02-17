@@ -1,13 +1,17 @@
 ---
 # ====================================
-# @author: Role 1
-# @description: Description of role1
+# @meta author: Role 1
+# @meta description: Description of role1 #
+# second line
+#
 # ====================================
 #============================================================================================================
 # Role1
 #============================================================================================================
-# @tag: duplicated_tag  # description of duplicated_tag
-# @tag: role_1 # description of role_1
+# @action role1 action # this is the description of the actions
+# performed by role1 action
+# @tag duplicated_tag  # description of duplicated_tag
+# @tag role_1 # description of role_1
 - block:
 
   - name: Install some task

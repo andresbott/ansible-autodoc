@@ -1,0 +1,56 @@
+---
+# this file contains some specifically crafted annotations used in the automated tests, don't change if not
+# changing the code + tests
+
+# ====================================
+# META this annotation is used to test annotation parsing in different combinations
+# ====================================
+#@meta key1: value1
+# @meta key2 : value2 # desc2
+- no_content:
+# @meta key3 multi-word: value3
+# desc3
+#
+# no desc
+# @meta key4: # desc4
+# desc42
+# @meta key5: value5
+
+
+# ====================================
+# VAR
+# ====================================
+
+# @var sample: "default" # description that can also
+# be a multi line description
+#
+# this should not be part anymore of the var description
+
+# ====================================
+# TODO
+# ====================================
+# @todo cat1 # desc1-1
+# desc1-1newline
+
+# @todo cat1 # desc1-2
+# desc1-2newline
+
+# @todo  # desc2
+# @todo cat3
+# desc3
+
+
+# ====================================
+# TAG
+# ====================================
+
+# @tag name # description
+# @tag tag2 # description2
+# @tag tag2 # duplicate
+# @tag tag2 # duplicate2
+
+- tags: tag2
+
+- tags:
+  - name
+  - tag2

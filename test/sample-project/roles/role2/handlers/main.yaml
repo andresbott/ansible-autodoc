@@ -2,7 +2,8 @@
 #============================================================================================================
 # Role2
 #============================================================================================================
-# @todo: improvement # this is something to refactor
+# @todo improvement # this is something to refactor
+# @action Install # Install packages for Role2
 - block:
 
   - name: Install some task

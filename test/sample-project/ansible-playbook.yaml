@@ -3,8 +3,8 @@
 #============================================================================================================
 # A playbook
 #============================================================================================================
-# @tag:  playbook_tag # playbook_tag description
-# @tag:  playbook_tags # playbook_tag description @tag: some
+# @tag  playbook_tag # playbook_tag description
+# @tag  playbook_tags # playbook_tag description @tag: some
 - hosts: all
   tasks:
   - include_role:
@@ -12,10 +12,10 @@
     tags:
       - playbook_tag
 
-# @todo: bug # some bug description
-# @todo: # No section
+# @todo bug # some bug description
+# @todo # No section
 
-# @todo: # No section2
+# @todo # No section2
 # @example:immediate fix: # This is a text sentence providing more information about using this variable
 # here comes some
 # multi line block

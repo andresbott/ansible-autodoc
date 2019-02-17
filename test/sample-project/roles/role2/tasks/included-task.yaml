@@ -1,15 +1,16 @@
 ---
 #============================================================================================================
-# Role2
+# Included task
 #============================================================================================================
-# @tag: role2 # description of role2
-# @tag: configuration # description of configurationç
+# @tag included # description of included
+# @tag duplicated_tag # description of duplicated_tag
+# @tag configuration # Duplicated description
 
-# @action: Install # Install all the needed Appsç
-# @todo: Install # Create some users
+# @task: enroll # Example: create ssh keys
+
 - block:
 
-  - name: Insta
+  - name: Install
     apt:
       name:
         - aptitude
@@ -19,13 +20,11 @@
     notify: start fail2ban
     when: extra_install_fail2ban
 
-  - name: Include
-    include_tasks:  included-task.yaml
-    tags:           ['role2','configuration','untagged','not_annotated',]
 
   tags:
     - role2
-    - untagged
+    - never
+    - duplicated_tag
+    - included
 
 
-# ñçç
