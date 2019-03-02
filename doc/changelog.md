@@ -4,6 +4,7 @@
   * FIX: when reporting files, use relative paths
   * improve readme template
   * improve doc_and_readme template
+  * improve documentation
 
 2019/02/17 - Version 0.5.2
   * FIX: run only in playbook or role project 
