@@ -1,0 +1,8 @@
+example: {% if  item.example.key is defined and item.example.key != "_unset_" %}**{{ item.example.key }}**{% endif %}
+
+
+{% if  item.example.value is defined and item.example.value != "" %} {{ item.example.value }}{% endif %}
+
+```yaml
+{{ item.example.desc }}
+```

@@ -5,6 +5,7 @@
 #============================================================================================================
 # @tag  playbook_tag # playbook_tag description
 # @tag  playbook_tags # playbook_tag description @tag: some
+# @var  playbook_variable: default # this is a playbook variable
 - hosts: all
   tasks:
   - include_role:

@@ -1,0 +1,24 @@
+## Tags:
+{% for item in  r.get_type("tag") %}
+
+* `{{ item.key }}` - {{ item.desc }}
+
+{%  if item.example != "" %}
+example: {% if  item.example.key is defined and item.example.key != "_unset_" %}{{ item.example.key }}{% endif %}
+
+```yaml
+{{ item.example.desc }}
+```
+{% endif %}
+{%  endfor %}
+
+## Duplicated tags:
+{% for k,v in r.get_duplicates("tag") %}
+    * `{{ k }}` in files:
+
+    {%  for item in v %}
+        {{ item.file }} {% if item.line != "" %}(line: {{ item.line }}) {% endif %}
+
+    {% endfor %}
+
+{% endfor %}

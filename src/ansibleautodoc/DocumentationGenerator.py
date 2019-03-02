@@ -4,6 +4,7 @@ import glob
 import os
 import sys
 import pprint
+import ntpath
 
 from ansibleautodoc.Utils import SingleLog,FileUtils
 from ansibleautodoc.Config import SingleConfig
@@ -36,7 +37,7 @@ class Generator:
         for file in glob.iglob(base_dir+'/**/*.'+self.extension, recursive=True):
 
             relative_file = file[len(base_dir)+1:]
-            if relative_file[:1] != "_":
+            if ntpath.basename(file)[:1] != "_":
                 self.log.trace("[GENERATOR] found template file: "+relative_file)
                 self.template_files.append(relative_file)
             else:

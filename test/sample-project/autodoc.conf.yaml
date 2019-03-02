@@ -1,0 +1,41 @@
+---
+# About Ansible autodoc: Generate documentation from annotated playbooks and roles using templates
+# https://github.com/AndresBott/ansible-autodoc
+# filename: autodoc.conf.yaml
+
+# base directoy to scan, relative dir to configuration file
+# base_dir: "./"
+
+# documentation output directory, relative dir to configuration file.
+# output_dir: "./doc"
+
+# directory containing templates, relative dir to configuration file,
+# comment to use default build in ones
+# template_dir: "./template"
+
+# template directory name within template_dir
+# build in "doc_and_readme" and "readme"
+template: "doc_and_readme"
+
+# Overwrite documentation pages if already exist
+# this is equal to -y
+# template_overwrite : False
+
+# set the debug level: trace | debug | info | warn
+# see -v | -vv | -vvv
+# debug_level: "warn"
+
+# when searching for yaml files in playbook projects,
+# excluded this paths (dir and files) from analysis
+# default values
+excluded_playbook_dirs:
+    - "host_vars"
+    - "group_vars"
+    - "host_secrets"
+    - "plugins"
+    - "autodoc.conf.yaml"
+
+# when searching for yaml files in roles projects,
+# excluded this paths (dir and files) from analysis
+# default values
+excluded_roles_dirs: []

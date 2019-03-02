@@ -1,0 +1,14 @@
+## Tags:
+{% for item in  r.get_type("tag") %}
+
+* `{{ item.key }}` - {{ item.desc }}
+
+{%  if item.example != "" %}
+example: {% if  item.example.key is defined and item.example.key != "_unset_" %}{{ item.example.key }}{% endif %}
+
+```yaml
+{{ item.example.desc }}
+```
+{% endif %}
+{%  endfor %}
+
