@@ -1,6 +1,35 @@
 # Report
 
-## Tags:
+### About
+you can most probably obtain all this information during development using `absible-autodoc -p < annotation >`,
+you can also use "all" instead of a specific annotation.
 
-### Duplicated tags:
+## Duplicated tags:
 
+This is useful to identify duplicated tags in different roles that might be conflicting.
+
+{% for k,v in r.get_duplicates("tag") %}
+* `{{ k }}` in files:
+
+{%  for item in v %}
+        {{ item.file }} {% if item.line != "" %}(line: {{ item.line }}) {% endif %}
+
+{% endfor %}
+
+{% endfor %}
+
+## Duplicated variables:
+
+This is useful to identify duplicated variables in different roles that might be conflicting.
+
+{% for k,v in r.get_duplicates("var") %}
+* `{{ k }}` in files:
+
+    {%  for item in v %}
+        {{ item.file }} {% if item.line != "" %}(line: {{ item.line }}) {% endif %}
+
+    {% endfor %}
+
+{% endfor %}
+
+{{ r.about() }}

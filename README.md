@@ -13,6 +13,9 @@ Note: this project is currently in Beta, issues, ideas and pull requests are wel
    * tags: the autodoc will search for used tags in the project
 
 # Installation
+
+note: this only runs with python 3, if you still have python 2.x use pip3
+
 ## Manual (for dev)
 1. download / git clone this project
 2. cd ansible-autodoc
@@ -30,6 +33,9 @@ ansible-autodoc -h # print help
 ansible-autodoc -p all path/to/role # print in cli all the recolected data 
 ansible-autodoc [path/to/project] # will generate README file based on annotations  
 ``` 
+
+you can use grip README.md  to see the live changes on a web server https://pypi.org/project/grip/
+
 ### more flexibility 
 you can create a configuration file "autodoc.config.yaml" in the root of your project in order to modify
 several behaviours, see the sample config file for more details:
@@ -54,23 +60,18 @@ check below list of useful metadata
   * name: to define a different role/project name instead of the folder name
   * license: (self explanatory)
   * email: (self explanatory)
-* todo: `# @todo: section #Taskt that need to be done` to annotate a todo
+* todo: `# @todo section #Taskt that need to be done` to annotate a todo
 * action: `# @action section # description of the action` to annotate a actions performed by the playbook/role
 * tag: `# @tag tagname # description` to annotate tags, this is a special annotation as this will not only search
 for annotations, but also for used tags in the project and add that to the generated output.
 * variables: `# @var varname: ["some_defaut","other"] # Description of the variables` to annotate a variables
 * example: the idea is that after every annotation, we can define an example block, linked to the annotation.
 ```$xslt
-# @example: title # Some description
+# @example title # Some description
 # here comes some 
 # multi line block
 # @end
 ``` 
-
-## Not implemented:
-this is still not implemented, just ideas 
-
-`Nothing here`
 
 # Templates
 the template engine uses jinja2 for document parsing, the directory structure of the template
@@ -132,43 +133,40 @@ if they have been annotated more than once or if there are tags used in more tha
 * r.capitalize(string) : wrapper for python capitalize
 * r.fprn(role_name,replace_value="Playbook"): "filter playbook role name" replace the internal playbook role name 
 "_ansible_playbook_" with a different value.
+## templates:
+
+### readme
+
+the "readme" template (default) will generate a README.md file in the root of the project, detailing the sections:
+
+* title and description
+* actions
+* tags
+* variables
+* todos
+* license
+* author infomration
+
+you can extend this my creating a file "_readme_doby.md" that will be included in the rendered Readme just after the 
+initial description.
+
+### doc_and_readme
+
+the "doc_and_readme" template is an extended template intended to be used playbook projects with several roles, it will generate a minimal
+README.md file and a documentation subfolder "doc" with more detailed information.
+
+You can extend this my creating a file "_readme_doby.md" that will be included in the rendered Readme just after the 
+initial description. 
  
-# changelog
+the files created in the documentation folder will cover: 
 
-2019/02/17 - Version 0.5.2
-  * FIX: run only in playbook or role project 
-  * add -V | --version to cli
-  * solve pip install issues
+* tags: list all tags classified by roles
+* variables: list all variables classified by roles
+* todo: list all todo actions classified by roles
+* report: provides a report of the project and useful information during development
 
-2019/02/17 - Version 0.5.1.1
-  * add missing feature @example
-  * improve default template "readme"
-  * update install dependency on yaml for pip
+you can extend the documentation in this folder, just keep in mind that generated files will be overwritten.
 
-2019/02/17 - Version 0.5.0
-  * added uint tests
-  * refactored annotation discovery into Annotation object
-  * changed annotation to allow multi line description
-  * made annotation syntax more uniform 
-  * moved some essential logic from AutodocCli to Config
-  * IMPROVEMENT: got rid of annotations author and description and use meta: author | description instead
-  * Missing feature from 0.4: @example
-
-2019/01/22 - Version 0.4.2
-  * FIX: yaml load unicode files
-  * FIX: document parsing when some annotations are not present 
-  * improvements on the cli template
-  
-2019/01/21 - Version 0.4.2
-  * Added example block annotation
-
-2019/01/21 - Version 0.4.1
-  * Added print template to stdout, useful for project review and development
-  * Added @var annotation
-
-2019/01/20 - Version 0.4.0
-  * Basic functionality with tag annotations working
-  * simple annotations: "author", "description" and "todo2 also working
 
 # Todo
 * when a yaml file with a special char is templated, an UnicodeEncodeError will be thrown 
@@ -176,9 +174,12 @@ if they have been annotated more than once or if there are tags used in more tha
 * add template cli parameter
 
 ### improvements
+* issue: if using urls in values, it is split at : character i.e @meta description: some text [ link ] ( http://google.es )
 * improve the default templates : ongoing task
 * improve the documentation : ongoing task
-* add @autodoc tag, to use as flags for specific templates, i.e # @autodoc tags:hidden # 
+* improve data extraction from annotations: '@example #' requires the # to identify the following lines as content
+* add @autodoc tag, to use as flags for specific templates, i.e # @autodoc tags:hidden #
+* add configuration file for defining template include locations, to allow to have multiple include files in a subfolder
 to hide the render of tags section
 * add annotation personalization by extending annotation definition in configuration file
 * document annotation personalization

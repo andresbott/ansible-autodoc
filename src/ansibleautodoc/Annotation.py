@@ -89,7 +89,6 @@ class Annotation:
             if name == "tag":
                 self._find_tags()
 
-
     def get_details(self):
         return {
             "all": self._all_items,
@@ -146,7 +145,7 @@ class Annotation:
                 self._all_items[item.key] = item.get_obj()
             else:
                 # add to duplicates
-                print("Dup:" + str(item.key))
+                # print("Dup:" + str(item.key))
                 if item.key not in self._duplucate_items.keys():
                     self._duplucate_items[item.key] = []
                     self._duplucate_items[item.key].append(self._all_items[item.key])
@@ -168,7 +167,9 @@ class Annotation:
 
         # fill some more data
         if self._current_file:
-            item.file = self._current_file
+            # item.file = self._current_file
+            item.file = self._current_file[len(self.config.get_base_dir()) +1 :]
+
         if self._current_role:
             item.role = self._current_role
         if self._current_line:
@@ -184,7 +185,7 @@ class Annotation:
         parts = line1.split("#")
 
         # step3 take the main key value from the annotation
-        subparts = parts[0].split(":")
+        subparts = parts[0].split(":",1)
 
         key = str(subparts[0].strip())
         if key.strip() == "":
@@ -278,7 +279,9 @@ class Annotation:
                             if tag not in self.config.excluded_tags:
 
                                 item = AnnotationItem()
-                                item.file = file
+                                # item.file = file
+                                item.file = file[len(self.config.get_base_dir()) +1 :]
+
                                 item.role = role
                                 item.key = tag
 

@@ -1,10 +1,10 @@
 ### CLI tempate ###
-{{ r.test() | pprint }}
+
 {% if r.cli_print_section() == "all"  or r.cli_print_section() == "info" %}
     {% include '_description.j2'  %}
 {% endif %}
 
-{% if r.cli_print_section() == "all"  or r.cli_print_section() == "actions" %}
+{% if r.cli_print_section() == "all"  or r.cli_print_section() == "action" %}
     {% include '_action.j2'  %}
 {% endif %}
 

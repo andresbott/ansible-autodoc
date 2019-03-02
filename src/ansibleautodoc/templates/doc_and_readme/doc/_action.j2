@@ -1,7 +1,10 @@
-{% if r.has_items("todo") %}## TODO:
-{% for key , values in r.get_multi_type("todo") %}
+{% if r.has_items("action") %}## Actions:
+
+Actions performed by this role
+
+{% for key , values in r.get_multi_type("action") %}
     {% if key == "_unset_" %}
-#### Without section:
+
     {% for item in values %}
 * {{ item.desc }} {% if not r.is_role() %}({{ r.fprn(item.role) }}){% endif %}
 
@@ -9,7 +12,7 @@
     {% endif %}
 {% endfor %}
 
-{% for key , values in r.get_multi_type("todo") %}
+{% for key , values in r.get_multi_type("action") %}
     {% if key != "_unset_" %}
 #### {{ r.capitalize(key) }}:
         {% for item in values %}
@@ -18,4 +21,5 @@
         {% endfor %}
     {%  endif %}
 {%  endfor %}
-{%  endif %}
+
+{% endif %}

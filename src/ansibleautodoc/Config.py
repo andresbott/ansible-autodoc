@@ -14,15 +14,15 @@ class Config:
 # base_dir: "./" 
 
 # documentation output directory, relative dir to configuration file.
-output_dir: "./generated_doc" 
+output_dir: "./doc" 
 
 # directory containing templates, relative dir to configuration file, 
 # comment to use default build in ones
 # template_dir: "./template" 
 
 # template directory name within template_dir
-# build in "doc_and_readme" and "minimal_readme"
-template: "doc_and_readme" 
+# build in "doc_and_readme" and "readme"
+template: "readme" 
 
 # Overwrite documentation pages if already exist
 # this is equal to -y
@@ -103,6 +103,10 @@ excluded_roles_dirs: []
         "never",
         "untagged",
     ]
+
+    # used in self promotion
+    autodoc_name= "Ansible-autodoc"
+    autodoc_url= "https://github.com/AndresBott/ansible-autodoc"
 
     # annotation search patterns
 
@@ -237,9 +241,9 @@ excluded_roles_dirs: []
             "excluded_roles_dirs",
 
         ]
-        overwrite_map = {
-            "base_dir":"set_base_dir",
-        }
+        # overwrite_map = {
+        #     "base_dir":"set_base_dir",
+        # }
 
         with open(file, 'r') as yaml_file:
 

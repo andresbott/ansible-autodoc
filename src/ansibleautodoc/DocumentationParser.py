@@ -58,6 +58,7 @@ class Parser:
         base =self.config.get_base_dir()
         base += "/"+filename
         base = os.path.abspath(base)
+        self.log.debug("try to include:"+base)
         if os.path.isfile(base):
             text_file = open(base, "r")
             lines = text_file.readlines()
@@ -135,6 +136,12 @@ class Parser:
             data = self._annotation_objs[name].get_details()
             return data["duplicates"].items()
 
+    def has_items(self,name,role="all"):
+        if len(self._get_annotation(name,role)) > 0:
+            return True
+        else:
+            return False
+
     def allow_multiple(self,name):
         if name in self.config.annotations:
             if "allow_multiple" in self.config.annotations[name].keys() and self.config.annotations[name]["allow_multiple"]:
@@ -153,6 +160,9 @@ class Parser:
             return re
         else:
             return string
+    def about(self,l="md"):
+        if l == "md":
+            return "Documentation generated using: ["+self.config.autodoc_name+"]("+self.config.autodoc_url+")"
 
     def test(self):
         return "test()"

@@ -1,13 +1,12 @@
-{% if r.has_items("var") %}## Variables:
-{%  if r.is_role() %}
-{% for item in  r.get_type("var") %}
-
-* `{{ item.key }}`: `{{item.value }}` - {{ item.desc }}
-
-{%  if item.example != "" %}{% include '_example.j2'  %}{% endif %}
-
+# Variables:
+## List of roles
+{% for role in r.get_roles(False) %}
+    {% if  r.get_type("var",role) %}
+* [{{ r.capitalize(r.fprn(role)) }}](#{{ r.fprn(role) }})
+    {% endif %}
 {% endfor %}
-{% else %}
+
+## Details
 
 {% for role in r.get_roles(False) %}
     {% if  r.get_type("var",role) %}
@@ -15,8 +14,9 @@
     {% endif %}
     {% for item in  r.get_type("var",role) %}
 * `{{ item.key }}`: `{{item.value }}` - {{ item.desc }}
+{%  if item.example != "" %}{% include '_example.j2'  %}{% endif %}
     {%  endfor %}
-{% endfor %}
-{% endif %}
-{% endif %}
 
+{% endfor %}
+
+{{ r.about() }}

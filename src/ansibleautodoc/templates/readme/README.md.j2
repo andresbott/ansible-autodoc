@@ -1,5 +1,33 @@
-{%  if r.is_role() %}
-{% include '_role_readme.j2'  %}
-{% else %}
-{% include '_play_readme.j2'  %}
+# {%  if r.is_role() %}Ansible Role:{% endif %} {% if r.get_item("meta","role_name") %}{{ r.get_item("meta","role_name").value }}
+{% else %}{{  r.get_name() }}{% endif %}
+
+
+{% if r.get_item("meta","description") %}
+{{ r.capitalize(r.get_item("meta","description").value) +" "+ r.get_item("meta","description").desc }}
 {% endif %}
+{{ r.include("_after_description.md") }}
+{#      Actions     #}
+{% include '_action.j2'  %}
+{#      Tags      #}
+{% include '_tags.j2'  %}
+{#      Vars      #}
+{% include '_vars.j2'  %}
+{#      TO DO:      #}
+{% include '_todo.j2'  %}
+{#      LICENSE      #}
+{% if r.get_item("meta","license") %}
+## License
+{{ r.capitalize(r.get_item("meta","license").value) }}
+{{ r.capitalize(r.get_item("meta","license").desc) }}
+{% endif %}
+
+{#      Author information      #}
+{% if r.get_item("meta","author") %}
+## Author Information
+This {%  if r.is_role() %}role:{% else %}playbook{% endif %}  was created by: {{ r.capitalize(r.get_item("meta","author").value) }}
+{% if r.get_item("meta","email")  %}{{ r.capitalize(r.get_item("meta","email").value) }}{% endif %}
+{% endif %}
+
+{{ r.about() }}
+
+

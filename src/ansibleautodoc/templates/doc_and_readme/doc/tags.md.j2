@@ -1,19 +1,9 @@
-{## Tags:#}
-{#{% for role,role_value in tags._roles_.items() %}#}
-{#    {% if role == "_ansible_playbook_" %}#}
-{### Playbook tags:#}
-{#        {% for tag,value in role_value.items() %}#}
-{#* {{ tag }}: {{ value.text }}#}
-{#        {% endfor %}#}
-{#    {% endif %}#}
-{#{% endfor %}#}
-{##}
-{### Roles tags:#}
-{#{% for role,role_value in tags._roles_.items() %}{% if role != "_ansible_playbook_" %}#}
-{#### {{ role }}:#}
-{#{% for tag,value in role_value.items() %}#}
-{#* {{ tag }}: {{ value.text }}#}
-{#{% endfor %}#}
-{##}
-{#{% endif %}#}
-{#{% endfor %}#}
+# Tags:
+{% for role in r.get_roles(False) %}
+### {{ r.capitalize(r.fprn(role)) }}:
+{% for item in  r.get_type("tag",role) %}
+* `{{ item.key }}` - {{ item.desc }}
+{%  endfor %}
+{% endfor %}
+
+{{ r.about() }}
