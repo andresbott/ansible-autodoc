@@ -10,14 +10,15 @@ def test_is_role():
     conf = SingleConfig()
     conf.set_base_dir(sample_project)
     assert conf.is_role == False
-    conf.set_base_dir(sample_project+"/roles/role1")
+    conf.set_base_dir(os.path.realpath(sample_project+"/roles/role1"))
     assert conf.is_role == True
 
 def test_default_template_dir():
     conf = Config()
     basedir = conf.get_template_base_dir()
-    sample = "ansibleautodoc/templates/readme"
-    assert basedir[-len(sample):] == sample
+    basedir = os.path.normcase(os.path.realpath(basedir)).replace("src","test")
+    sample = os.path.normcase(os.path.realpath("ansibleautodoc/templates/readme"))
+    assert basedir == sample
 
 def test_get_annotation_definition():
     conf = Config()

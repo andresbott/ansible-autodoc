@@ -187,9 +187,9 @@ excluded_roles_dirs: []
     def _set_is_role(self):
         # is role
         self.project_name = os.path.basename(self._base_dir)
-        if os.path.isdir(self._base_dir+"/roles"):
+        if os.path.isdir(os.path.realpath(self._base_dir+"/roles")):
             self.is_role = False
-        elif os.path.isdir(self._base_dir+"/tasks"):
+        elif os.path.isdir(os.path.realpath(self._base_dir+"/tasks")):
             self.is_role = True
         else:
             self.is_role = None
@@ -214,7 +214,7 @@ excluded_roles_dirs: []
         :return: str abs path
         """
         if self.use_print_template:
-            return os.path.realpath(self.script_base_dir+"/templates/cliprint")
+            return os.path.realpath(os.path.join(self.script_base_dir,"/templates/cliprint"))
 
         if self.template == "":
             template = self.default_template
@@ -222,11 +222,11 @@ excluded_roles_dirs: []
             template = self.template
 
         if self.template_dir == "":
-            return os.path.realpath(self.script_base_dir+"/templates/"+template)
+            return os.path.realpath(os.path.join(self.script_base_dir,"templates",template))
         elif os.path.isabs(self.template_dir):
-            return os.path.realpath(self.template_dir+"/"+template)
+            return os.path.realpath(os.path.join(self.template_dir,template))
         elif not os.path.isabs(self.template_dir):
-            return os.path.realpath(self._config_file_dir+"/"+self.template_dir+"/"+template)
+            return os.path.realpath(os.path.join(self._config_file_dir,self.template_dir,template))
 
     def load_config_file(self, file):
 

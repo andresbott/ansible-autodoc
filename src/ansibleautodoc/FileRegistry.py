@@ -37,7 +37,7 @@ class Registry:
         :return:
         """
         base_dir = self.config.get_base_dir()
-        base_dir_roles = base_dir+"/roles"
+        base_dir_roles = os.path.realpath(base_dir+"/roles")
 
         if not self.config.is_role:
 
@@ -100,7 +100,7 @@ class Registry:
 
         is_filtered = False
         for excluded_dir in excluded:
-            if file.startswith(base_dir+"/"+excluded_dir):
+            if file.startswith(os.path.realpath(base_dir+"/"+excluded_dir)):
                 return True
         return is_filtered
 
