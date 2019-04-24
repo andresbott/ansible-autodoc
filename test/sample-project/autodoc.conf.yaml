@@ -15,11 +15,11 @@
 
 # template directory name within template_dir
 # build in "doc_and_readme" and "readme"
-template: "doc_and_readme"
+template: "readme"
 
 # Overwrite documentation pages if already exist
 # this is equal to -y
-# template_overwrite : False
+template_overwrite : True
 
 # set the debug level: trace | debug | info | warn
 # see -v | -vv | -vvv
@@ -39,3 +39,7 @@ excluded_playbook_dirs:
 # excluded this paths (dir and files) from analysis
 # default values
 excluded_roles_dirs: []
+
+# Add a Flowchart with each playbook's role
+# default False
+mermaid: True

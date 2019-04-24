@@ -6,6 +6,10 @@
 {{ r.capitalize(r.get_item("meta","description").value) +" "+ r.get_item("meta","description").desc }}
 {% endif %}
 {{ r.include("_after_description.md") }}
+{% if r.mermaid() %}
+{#      Overview      #}
+{% include '_workflow.j2'  %}
+{% endif %}
 {#      Actions     #}
 {% include '_action.j2'  %}
 {#      Tags      #}
@@ -29,5 +33,3 @@ This {%  if r.is_role() %}role:{% else %}playbook{% endif %}  was created by: {{
 {% endif %}
 
 {{ r.about() }}
-
-

@@ -47,6 +47,10 @@ excluded_playbook_dirs:
 # default values
 excluded_roles_dirs: []
 
+# add a flowchart with each playbook's role
+# default False
+# mermaid: False
+
 """
     # path to the documentation output dir
     output_dir = ""
@@ -103,6 +107,9 @@ excluded_roles_dirs: []
         "never",
         "untagged",
     ]
+
+    # enable mermaidjs flowchart for playbook's roles
+    mermaid = False
 
     # used in self promotion
     autodoc_name= "Ansible-autodoc"
@@ -239,6 +246,7 @@ excluded_roles_dirs: []
             "debug_level",
             "excluded_playbook_dirs",
             "excluded_roles_dirs",
+            "mermaid"
 
         ]
         # overwrite_map = {

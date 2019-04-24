@@ -167,7 +167,8 @@ class Parser:
     def test(self):
         return "test()"
 
-
+    def mermaid(self):
+        return self.config.mermaid
 
 
 

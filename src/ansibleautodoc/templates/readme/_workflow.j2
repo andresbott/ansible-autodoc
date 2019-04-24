@@ -1,0 +1,10 @@
+{% set roles=r.get_roles() %}
+```mermaid
+graph TD
+{% for role in roles %}
+    {% if roles[loop.index] %}
+    {{ role }} --> {{ roles[loop.index] }}
+    {% endif %}
+{% endfor %}
+```
+
