@@ -272,7 +272,7 @@ class Annotation:
 
                 with open(file, 'r',encoding='utf8') as yaml_file:
                     try:
-                        data = yaml.load(yaml_file)
+                        data = yaml.load(yaml_file, Loader=yaml.SafeLoader)
                         tags_found = Annotation.find_tag("tags",data)
 
                         for tag in tags_found:
