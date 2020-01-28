@@ -249,7 +249,7 @@ excluded_roles_dirs: []
 
             try:
                 self._config_file_dir = os.path.dirname(os.path.realpath(file))
-                data = yaml.load(yaml_file)
+                data = yaml.load(yaml_file, Loader=yaml.SafeLoader)
                 if data:
                     for item_to_configure in allow_to_overwrite:
                         if item_to_configure in data.keys():
