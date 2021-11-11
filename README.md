@@ -141,6 +141,6 @@ $ cd <project>
 
 # create sample configuration (optional) 
 # you can pass the options as parameters too
-$ ansible-autodoc --sample-doc > autodoc.config.yaml
+$ ansible-autodoc --sample-config > autodoc.config.yaml
 ```
 
